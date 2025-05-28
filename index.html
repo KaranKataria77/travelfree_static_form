@@ -95,6 +95,7 @@
   </div>
 
   <script>
+    console.log("changes 2")
     const form = document.getElementById('addressForm');
     const successMessage = document.getElementById('successMessage');
   
@@ -109,7 +110,6 @@
         form.reset();
   
         setTimeout(() => {
-          console.log("changes 1")
           const phoneNumber = '916358250345'; // 🔁 Replace with your WhatsApp number
           const message = `Pickup Address: ${pickup}%0ADelivery Address: ${delivery}`;
           const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
