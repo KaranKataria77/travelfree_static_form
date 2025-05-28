@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Address Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #d4edda;
+      color: #155724;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+
+      button {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Enter Addresses</h2>
+    <form id="addressForm">
+      <label for="pickup">Pickup Address</label>
+      <input type="text" id="pickup" name="pickup" required>
+
+      <label for="delivery">Delivery Address</label>
+      <input type="text" id="delivery" name="delivery" required>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="success-message" id="successMessage">
+      Form submitted successfully!
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('addressForm');
+    const successMessage = document.getElementById('successMessage');
+  
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+  
+      const pickup = document.getElementById('pickup').value.trim();
+      const delivery = document.getElementById('delivery').value.trim();
+  
+      if (pickup && delivery) {
+        successMessage.style.display = 'block';
+        form.reset();
+  
+        setTimeout(() => {
+          const phoneNumber = '919876543210'; // 🔁 Replace with your WhatsApp number
+          const message = `Pickup Address: ${pickup}%0ADelivery Address: ${delivery}`;
+          const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+          window.location.href = whatsappURL;
+        }, 2000);
+      }
+    });
+  </script>
+  
+
+</body>
+</html>
