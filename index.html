@@ -60,6 +60,34 @@
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
         
+        /* Google Places Autocomplete styling */
+        .pac-container {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 2px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .pac-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .pac-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .pac-item-selected {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .pac-matched {
+            font-weight: bold;
+        }
+        
         button {
             width: 100%;
             padding: 15px;
@@ -93,6 +121,58 @@
             font-weight: bold;
         }
         
+        .loading-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .input-container input[type="text"] {
+            margin-bottom: 0;
+        }
+        
+        .custom-autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .autocomplete-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        
         /* Mobile First Responsive Design */
         @media (max-width: 480px) {
             body {
@@ -123,6 +203,14 @@
             
             label {
                 font-size: 0.9rem;
+            }
+            
+            .pac-container {
+                font-size: 13px;
+            }
+            
+            .pac-item {
+                padding: 12px 15px;
             }
         }
         
@@ -205,23 +293,190 @@
     <div class="container">
         <h2>Enter Addresses</h2>
         <form id="addressForm">
-            <label for="pickup">Pickup Address</label>
-            <input type="text" id="pickup" name="pickup" required placeholder="Enter pickup location">
+            <div class="input-container">
+                <label for="pickup">Pickup Address</label>
+                <input type="text" id="pickup" name="pickup" required placeholder="Enter pickup location">
+            </div>
             
-            <label for="delivery">Delivery Address</label>
-            <input type="text" id="delivery" name="delivery" required placeholder="Enter delivery location">
+            <div class="input-container">
+                <label for="delivery">Delivery Address</label>
+                <input type="text" id="delivery" name="delivery" required placeholder="Enter delivery location">
+            </div>
             
             <button type="submit">Submit</button>
         </form>
+        
+        <div class="loading-message" id="loadingMessage">
+            Loading Google Maps...
+        </div>
         
         <div class="success-message" id="successMessage">
             Form submitted successfully!
         </div>
     </div>
 
+    <!-- Google Maps Places API -->
     <script>
-        console.log("Responsive form loaded");
+        let pickupAutocomplete;
+        let deliveryAutocomplete;
+        let pickupService;
+        let deliveryService;
+        let customDropdowns = {};
         
+        // Initialize Google Maps Places Autocomplete
+        function initAutocomplete() {
+            // Initialize Places Service for custom debounced requests
+            pickupService = new google.maps.places.AutocompleteService();
+            deliveryService = new google.maps.places.AutocompleteService();
+            
+            // Set up custom debounced autocomplete for both fields
+            setupDebouncedAutocomplete('pickup', pickupService);
+            setupDebouncedAutocomplete('delivery', deliveryService);
+            
+            // Hide loading message
+            document.getElementById('loadingMessage').style.display = 'none';
+        }
+        
+        // Custom autocomplete with proper debouncing
+        function setupDebouncedAutocomplete(fieldId, serviceInstance) {
+            const inputElement = document.getElementById(fieldId);
+            const inputContainer = inputElement.parentElement;
+            const debounceDelay = 1000; // 1 second delay
+            let debounceTimer;
+            let currentRequest = null;
+            
+            // Create custom dropdown container
+            const dropdown = document.createElement('div');
+            dropdown.className = 'custom-autocomplete-dropdown';
+            
+            // Append dropdown to the input container (which is already positioned relative)
+            inputContainer.appendChild(dropdown);
+            customDropdowns[fieldId] = dropdown;
+            
+            // Clear previous timer and set new one
+            inputElement.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                
+                // Clear existing timer
+                clearTimeout(debounceTimer);
+                
+                // Hide dropdown if query is too short
+                if (query.length < 3) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+                
+                // Set new timer for 1 second delay
+                debounceTimer = setTimeout(() => {
+                    searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId);
+                }, debounceDelay);
+            });
+            
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!inputElement.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // Hide dropdown on input blur (with delay to allow clicks)
+            inputElement.addEventListener('blur', () => {
+                setTimeout(() => {
+                    if (!dropdown.matches(':hover')) {
+                        dropdown.style.display = 'none';
+                    }
+                }, 200);
+            });
+            
+            // Show dropdown on input focus if it has content
+            inputElement.addEventListener('focus', () => {
+                if (dropdown.children.length > 0) {
+                    dropdown.style.display = 'block';
+                }
+            });
+        }
+        
+        // Search places with debouncing
+        function searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId) {
+            const request = {
+                input: query,
+                types: ['establishment', 'geocode'],
+                componentRestrictions: { country: 'IN' }
+            };
+            
+            console.log(`Searching for "${query}" in ${fieldId} field (after 1s delay)`);
+            
+            serviceInstance.getPlacePredictions(request, (predictions, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+                    displayPredictions(predictions, dropdown, inputElement);
+                } else {
+                    console.log(`${fieldId} search status:`, status);
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+        
+        // Display predictions in custom dropdown
+        function displayPredictions(predictions, dropdown, inputElement) {
+            dropdown.innerHTML = '';
+            
+            predictions.slice(0, 5).forEach(prediction => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                
+                // Highlight matched text
+                const mainText = prediction.structured_formatting.main_text;
+                const secondaryText = prediction.structured_formatting.secondary_text;
+                
+                item.innerHTML = `
+                    <div style="font-weight: bold; color: #333;">${mainText}</div>
+                    <div style="color: #666; font-size: 12px;">${secondaryText || ''}</div>
+                `;
+                
+                // Prevent event bubbling and add click handler
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Set the input value
+                    inputElement.value = prediction.description;
+                    
+                    // Hide dropdown
+                    dropdown.style.display = 'none';
+                    
+                    // Focus back to input to maintain cursor
+                    inputElement.focus();
+                    
+                    console.log('Selected:', prediction.description);
+                    console.log('Input value set to:', inputElement.value);
+                });
+                
+                // Add mousedown event as backup (fires before blur)
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    inputElement.value = prediction.description;
+                    dropdown.style.display = 'none';
+                    console.log('Selected via mousedown:', prediction.description);
+                });
+                
+                dropdown.appendChild(item);
+            });
+            
+            dropdown.style.display = 'block';
+        }
+        
+        // Handle Google Maps API load error
+        function handleGoogleMapsError() {
+            document.getElementById('loadingMessage').innerHTML = 'Error loading Google Maps. Please check your API key.';
+            document.getElementById('loadingMessage').style.backgroundColor = '#f8d7da';
+            document.getElementById('loadingMessage').style.color = '#721c24';
+            document.getElementById('loadingMessage').style.borderColor = '#f5c6cb';
+        }
+        
+        // Show loading message initially
+        document.getElementById('loadingMessage').style.display = 'block';
+        
+        // Form submission handling
         const form = document.getElementById('addressForm');
         const successMessage = document.getElementById('successMessage');
         
@@ -258,5 +513,10 @@
             });
         });
     </script>
+    
+    <!-- Load Google Maps Places API -->
+    <!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUDgijpqock4xtLQrgOHIkPAdQF8FqaF8&libraries=places&callback=initAutocomplete&loading=async" 
+            onerror="handleGoogleMapsError()"></script>
 </body>
 </html>
