@@ -329,6 +329,10 @@
             pickupService = new google.maps.places.AutocompleteService();
             deliveryService = new google.maps.places.AutocompleteService();
             
+            // Initialize Places Details Service to get postal codes
+            const map = new google.maps.Map(document.createElement('div'));
+            window.placesDetailService = new google.maps.places.PlacesService(map);
+            
             // Set up custom debounced autocomplete for both fields
             setupDebouncedAutocomplete('pickup', pickupService);
             setupDebouncedAutocomplete('delivery', deliveryService);
@@ -416,6 +420,44 @@
             });
         }
         
+        // Get detailed place information including postal code
+        function getPlaceDetails(placeId, callback) {
+            const request = {
+                placeId: placeId,
+                fields: ['address_components', 'formatted_address', 'geometry', 'name']
+            };
+            
+            window.placesDetailService.getDetails(request, (place, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    // Extract postal code from address components
+                    let postalCode = '';
+                    let formattedAddress = place.formatted_address;
+                    
+                    if (place.address_components) {
+                        place.address_components.forEach(component => {
+                            if (component.types.includes('postal_code')) {
+                                postalCode = component.long_name;
+                            }
+                        });
+                    }
+                    
+                    // If postal code found and not already in address, append it
+                    if (postalCode && !formattedAddress.includes(postalCode)) {
+                        formattedAddress = `${formattedAddress}, ${postalCode}`;
+                    }
+                    
+                    callback({
+                        address: formattedAddress,
+                        postalCode: postalCode,
+                        originalAddress: place.formatted_address
+                    });
+                } else {
+                    console.error('Places Details request failed:', status);
+                    callback(null);
+                }
+            });
+        }
+        
         // Display predictions in custom dropdown
         function displayPredictions(predictions, dropdown, inputElement) {
             dropdown.innerHTML = '';
@@ -438,25 +480,45 @@
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    // Set the input value
-                    inputElement.value = prediction.description;
+                    // Show loading state
+                    item.innerHTML = '<div style="color: #007bff; font-style: italic;">Getting postal code...</div>';
                     
-                    // Hide dropdown
-                    dropdown.style.display = 'none';
-                    
-                    // Focus back to input to maintain cursor
-                    inputElement.focus();
-                    
-                    console.log('Selected:', prediction.description);
-                    console.log('Input value set to:', inputElement.value);
+                    // Get detailed place information including postal code
+                    getPlaceDetails(prediction.place_id, (placeDetails) => {
+                        if (placeDetails) {
+                            // Set the input value with postal code
+                            inputElement.value = placeDetails.address;
+                            console.log('Selected address with postal code:', placeDetails.address);
+                            console.log('Postal code:', placeDetails.postalCode);
+                        } else {
+                            // Fallback to basic address if details fetch fails
+                            inputElement.value = prediction.description;
+                            console.log('Selected (fallback):', prediction.description);
+                        }
+                        
+                        // Hide dropdown
+                        dropdown.style.display = 'none';
+                        
+                        // Focus back to input to maintain cursor
+                        inputElement.focus();
+                    });
                 });
                 
                 // Add mousedown event as backup (fires before blur)
                 item.addEventListener('mousedown', (e) => {
                     e.preventDefault();
-                    inputElement.value = prediction.description;
-                    dropdown.style.display = 'none';
-                    console.log('Selected via mousedown:', prediction.description);
+                    
+                    // Get detailed place information for mousedown as well
+                    getPlaceDetails(prediction.place_id, (placeDetails) => {
+                        if (placeDetails) {
+                            inputElement.value = placeDetails.address;
+                            console.log('Selected via mousedown with postal code:', placeDetails.address);
+                        } else {
+                            inputElement.value = prediction.description;
+                            console.log('Selected via mousedown (fallback):', prediction.description);
+                        }
+                        dropdown.style.display = 'none';
+                    });
                 });
                 
                 dropdown.appendChild(item);
