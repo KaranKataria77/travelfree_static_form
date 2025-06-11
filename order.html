@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Placed</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #e6f7ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      background: #fff;
+      padding: 3rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 90%;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .checkmark {
+      font-size: 4rem;
+      color: #4caf50;
+      animation: pop 0.5s ease forwards;
+    }
+
+    .message {
+      font-size: 2rem;
+      color: #333;
+      margin-top: 1rem;
+      opacity: 0;
+      animation: slideUp 0.6s ease 0.3s forwards;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .message {
+        font-size: 1.4rem;
+      }
+
+      .checkmark {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="checkmark">✅</div>
+    <div class="message">Your order is placed</div>
+  </div>
+
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const whatsappNo = params.get("whatsapp_no");
+
+      if (whatsappNo) {
+        const apiUrl = `https://6b61-27-107-63-62.ngrok-free.app/meta-webhook/v1/webhook/redirect_url?whatsapp_no=${encodeURIComponent(whatsappNo)}`;
+        console.log("API URL:", apiUrl);
+        
+        // API call in background
+        fetch(apiUrl, {
+          method: 'GET'
+        }).catch((error) => {
+          console.error("Error fetching redirect URL:", error);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
