@@ -172,6 +172,19 @@
         .autocomplete-item:last-child {
             border-bottom: none;
         }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #495057;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
         
         /* Mobile First Responsive Design */
         @media (max-width: 480px) {
@@ -313,6 +326,8 @@
         <div class="success-message" id="successMessage">
             Form submitted successfully!
         </div>
+
+        <div class="debug-info" id="debugInfo" style="display: none;"></div>
     </div>
 
     <!-- Google Maps Places API -->
@@ -323,13 +338,17 @@
         let deliveryService;
         let customDropdowns = {};
         
+        // Store structured address data
+        let pickupAddressData = null;
+        let deliveryAddressData = null;
+        
         // Initialize Google Maps Places Autocomplete
         function initAutocomplete() {
             // Initialize Places Service for custom debounced requests
             pickupService = new google.maps.places.AutocompleteService();
             deliveryService = new google.maps.places.AutocompleteService();
             
-            // Initialize Places Details Service to get postal codes
+            // Initialize Places Details Service to get structured address components
             const map = new google.maps.Map(document.createElement('div'));
             window.placesDetailService = new google.maps.places.PlacesService(map);
             
@@ -404,15 +423,20 @@
         function searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId) {
             const request = {
                 input: query,
-                types: ['establishment', 'geocode'],
-                componentRestrictions: { country: 'IN' }
+                types: ['geocode'], // More specific type to reduce results
+                componentRestrictions: { country: 'IN' },
+                // These additional parameters help optimize results
+                sessionToken: new google.maps.places.AutocompleteSessionToken(),
+                region: 'IN', // Bias results towards India
+                strictBounds: false
             };
             
             console.log(`Searching for "${query}" in ${fieldId} field (after 1s delay)`);
             
             serviceInstance.getPlacePredictions(request, (predictions, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
-                    displayPredictions(predictions, dropdown, inputElement);
+                    // Take only first 5 results after API call to save processing
+                    displayPredictions(predictions.slice(0, 5), dropdown, inputElement, fieldId);
                 } else {
                     console.log(`${fieldId} search status:`, status);
                     dropdown.style.display = 'none';
@@ -420,36 +444,112 @@
             });
         }
         
-        // Get detailed place information including postal code
-        function getPlaceDetails(placeId, callback) {
+        // Extract structured address components from Google Places API
+        function extractAddressComponents(place) {
+            const addressData = {
+                zip: '',
+                landmark: '',
+                city: '',
+                state: '',
+                country: 'India' // Default since we're restricting to India
+            };
+            
+            if (!place.address_components) {
+                return addressData;
+            }
+            
+            // Map Google Places API component types to our structure
+            place.address_components.forEach(component => {
+                const types = component.types;
+                
+                // Postal Code
+                if (types.includes('postal_code')) {
+                    addressData.zip = component.long_name;
+                }
+                
+                // City - can be locality, sublocality, or administrative_area_level_2
+                else if (types.includes('locality')) {
+                    addressData.city = component.long_name;
+                }
+                else if (types.includes('sublocality_level_1') && !addressData.city) {
+                    addressData.city = component.long_name;
+                }
+                else if (types.includes('administrative_area_level_2') && !addressData.city) {
+                    addressData.city = component.long_name;
+                }
+                
+                // State
+                else if (types.includes('administrative_area_level_1')) {
+                    addressData.state = component.long_name;
+                }
+                
+                // Country
+                else if (types.includes('country')) {
+                    addressData.country = component.long_name;
+                }
+                
+                // Landmark - can be sublocality, neighborhood, or premise
+                else if (types.includes('sublocality_level_2') || 
+                         types.includes('sublocality_level_3') ||
+                         types.includes('neighborhood')) {
+                    if (!addressData.landmark) {
+                        addressData.landmark = component.long_name;
+                    }
+                }
+                else if (types.includes('premise') || types.includes('establishment')) {
+                    if (!addressData.landmark && place.name !== component.long_name) {
+                        addressData.landmark = component.long_name;
+                    }
+                }
+            });
+            
+            // If no landmark found, try to use the place name as landmark
+            if (!addressData.landmark && place.name) {
+                // Only use place name if it's not the same as the city
+                if (place.name !== addressData.city) {
+                    addressData.landmark = place.name;
+                }
+            }
+            
+            // Fallback: if still no landmark, try to extract from formatted address
+            if (!addressData.landmark && place.formatted_address) {
+                const addressParts = place.formatted_address.split(',');
+                if (addressParts.length > 2) {
+                    // Try to get a meaningful landmark from the first part
+                    const firstPart = addressParts[0].trim();
+                    if (firstPart !== addressData.city && firstPart !== addressData.state) {
+                        addressData.landmark = firstPart;
+                    }
+                }
+            }
+            
+            return addressData;
+        }
+        
+        // Get detailed place information with structured address components
+        function getPlaceDetails(placeId, fieldId, callback) {
             const request = {
                 placeId: placeId,
-                fields: ['address_components', 'formatted_address', 'geometry', 'name']
+                fields: ['address_components', 'name']
             };
             
             window.placesDetailService.getDetails(request, (place, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    // Extract postal code from address components
-                    let postalCode = '';
-                    let formattedAddress = place.formatted_address;
+                    // Extract structured address components
+                    const structuredAddress = extractAddressComponents(place);
                     
-                    if (place.address_components) {
-                        place.address_components.forEach(component => {
-                            if (component.types.includes('postal_code')) {
-                                postalCode = component.long_name;
-                            }
-                        });
+                    // Store the structured data based on field
+                    if (fieldId === 'pickup') {
+                        pickupAddressData = structuredAddress;
+                    } else if (fieldId === 'delivery') {
+                        deliveryAddressData = structuredAddress;
                     }
                     
-                    // If postal code found and not already in address, append it
-                    if (postalCode && !formattedAddress.includes(postalCode)) {
-                        formattedAddress = `${formattedAddress}, ${postalCode}`;
-                    }
+                    // Update debug display
+                    updateDebugDisplay();
                     
                     callback({
-                        address: formattedAddress,
-                        postalCode: postalCode,
-                        originalAddress: place.formatted_address
+                        structuredData: structuredAddress
                     });
                 } else {
                     console.error('Places Details request failed:', status);
@@ -458,15 +558,35 @@
             });
         }
         
+        // Update debug display with current address data
+        function updateDebugDisplay() {
+            const debugDiv = document.getElementById('debugInfo');
+            let debugText = '';
+            
+            if (pickupAddressData) {
+                debugText += 'PICKUP ADDRESS:\n' + JSON.stringify(pickupAddressData, null, 2) + '\n\n';
+            }
+            
+            if (deliveryAddressData) {
+                debugText += 'DELIVERY ADDRESS:\n' + JSON.stringify(deliveryAddressData, null, 2);
+            }
+            
+            if (debugText) {
+                debugDiv.textContent = debugText;
+                debugDiv.style.display = 'block';
+            }
+        }
+        
         // Display predictions in custom dropdown
-        function displayPredictions(predictions, dropdown, inputElement) {
+        function displayPredictions(predictions, dropdown, inputElement, fieldId) {
             dropdown.innerHTML = '';
             
-            predictions.slice(0, 5).forEach(prediction => {
+            // predictions already limited to 5 from the API response
+            predictions.forEach(prediction => {
                 const item = document.createElement('div');
                 item.className = 'autocomplete-item';
                 
-                // Highlight matched text
+                // Show the prediction description directly
                 const mainText = prediction.structured_formatting.main_text;
                 const secondaryText = prediction.structured_formatting.secondary_text;
                 
@@ -475,49 +595,20 @@
                     <div style="color: #666; font-size: 12px;">${secondaryText || ''}</div>
                 `;
                 
-                // Prevent event bubbling and add click handler
+                // Handle selection
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    // Show loading state
-                    item.innerHTML = '<div style="color: #007bff; font-style: italic;">Getting postal code...</div>';
+                    // Show user the description immediately
+                    inputElement.value = prediction.description;
+                    dropdown.style.display = 'none';
                     
-                    // Get detailed place information including postal code
-                    getPlaceDetails(prediction.place_id, (placeDetails) => {
+                    // Get structured data in background
+                    getPlaceDetails(prediction.place_id, fieldId, (placeDetails) => {
                         if (placeDetails) {
-                            // Set the input value with postal code
-                            inputElement.value = placeDetails.address;
-                            console.log('Selected address with postal code:', placeDetails.address);
-                            console.log('Postal code:', placeDetails.postalCode);
-                        } else {
-                            // Fallback to basic address if details fetch fails
-                            inputElement.value = prediction.description;
-                            console.log('Selected (fallback):', prediction.description);
+                            console.log(`${fieldId} structured data:`, placeDetails.structuredData);
                         }
-                        
-                        // Hide dropdown
-                        dropdown.style.display = 'none';
-                        
-                        // Focus back to input to maintain cursor
-                        inputElement.focus();
-                    });
-                });
-                
-                // Add mousedown event as backup (fires before blur)
-                item.addEventListener('mousedown', (e) => {
-                    e.preventDefault();
-                    
-                    // Get detailed place information for mousedown as well
-                    getPlaceDetails(prediction.place_id, (placeDetails) => {
-                        if (placeDetails) {
-                            inputElement.value = placeDetails.address;
-                            console.log('Selected via mousedown with postal code:', placeDetails.address);
-                        } else {
-                            inputElement.value = prediction.description;
-                            console.log('Selected via mousedown (fallback):', prediction.description);
-                        }
-                        dropdown.style.display = 'none';
                     });
                 });
                 
@@ -549,12 +640,32 @@
             const delivery = document.getElementById('delivery').value.trim();
             
             if (pickup && delivery) {
+                // Log the structured address data
+                console.log('FINAL PICKUP DATA:', pickupAddressData);
+                console.log('FINAL DELIVERY DATA:', deliveryAddressData);
+                
                 successMessage.style.display = 'block';
-                form.reset();
+                
+                // Here you can use pickupAddressData and deliveryAddressData
+                // which contain the structured format you requested
                 
                 setTimeout(() => {
                     const phoneNumber = '916358250345';
-                    const message = `Pickup Address: ${pickup}%0ADelivery Address: ${delivery}`;
+                    
+                    // Create message with structured data if available
+                    let message = '';
+                    if (pickupAddressData) {
+                        message += `Pickup: ${JSON.stringify(pickupAddressData)}%0A`;
+                    } else {
+                        message += `Pickup Address: ${pickup}%0A`;
+                    }
+                    
+                    if (deliveryAddressData) {
+                        message += `Delivery: ${JSON.stringify(deliveryAddressData)}`;
+                    } else {
+                        message += `Delivery Address: ${delivery}`;
+                    }
+                    
                     const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
                     window.location.href = whatsappURL;
                 }, 1000);
