@@ -172,19 +172,6 @@
         .autocomplete-item:last-child {
             border-bottom: none;
         }
-
-        .debug-info {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #495057;
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-        }
         
         /* Mobile First Responsive Design */
         @media (max-width: 480px) {
@@ -326,8 +313,6 @@
         <div class="success-message" id="successMessage">
             Form submitted successfully!
         </div>
-
-        <div class="debug-info" id="debugInfo" style="display: none;"></div>
     </div>
 
     <!-- Google Maps Places API -->
@@ -545,9 +530,6 @@
                         deliveryAddressData = structuredAddress;
                     }
                     
-                    // Update debug display
-                    updateDebugDisplay();
-                    
                     callback({
                         structuredData: structuredAddress
                     });
@@ -558,23 +540,19 @@
             });
         }
         
-        // Update debug display with current address data
-        function updateDebugDisplay() {
-            const debugDiv = document.getElementById('debugInfo');
-            let debugText = '';
+        // Convert structured address data to readable string format
+        function formatAddressString(addressData) {
+            if (!addressData) return '';
             
-            if (pickupAddressData) {
-                debugText += 'PICKUP ADDRESS:\n' + JSON.stringify(pickupAddressData, null, 2) + '\n\n';
-            }
+            const parts = [];
             
-            if (deliveryAddressData) {
-                debugText += 'DELIVERY ADDRESS:\n' + JSON.stringify(deliveryAddressData, null, 2);
-            }
+            if (addressData.landmark) parts.push(addressData.landmark);
+            if (addressData.city) parts.push(addressData.city);
+            if (addressData.state) parts.push(addressData.state);
+            if (addressData.zip) parts.push(addressData.zip);
+            if (addressData.country) parts.push(addressData.country);
             
-            if (debugText) {
-                debugDiv.textContent = debugText;
-                debugDiv.style.display = 'block';
-            }
+            return parts.filter(part => part.trim() !== '').join(', ');
         }
         
         // Display predictions in custom dropdown
@@ -640,31 +618,31 @@
             const delivery = document.getElementById('delivery').value.trim();
             
             if (pickup && delivery) {
-                // Log the structured address data
+                // Log the structured address data for debugging
                 console.log('FINAL PICKUP DATA:', pickupAddressData);
                 console.log('FINAL DELIVERY DATA:', deliveryAddressData);
                 
                 successMessage.style.display = 'block';
                 
-                // Here you can use pickupAddressData and deliveryAddressData
-                // which contain the structured format you requested
-                
                 setTimeout(() => {
                     const phoneNumber = '916358250345';
                     
-                    // Create message with structured data if available
-                    let message = '';
+                    // Create readable message format
+                    let pickupText = pickup;
+                    let deliveryText = delivery;
+                    
+                    // Use structured format if available, otherwise use original text
                     if (pickupAddressData) {
-                        message += `Pickup: ${JSON.stringify(pickupAddressData)}%0A`;
-                    } else {
-                        message += `Pickup Address: ${pickup}%0A`;
+                        const formattedPickup = formatAddressString(pickupAddressData);
+                        if (formattedPickup) pickupText = formattedPickup;
                     }
                     
                     if (deliveryAddressData) {
-                        message += `Delivery: ${JSON.stringify(deliveryAddressData)}`;
-                    } else {
-                        message += `Delivery Address: ${delivery}`;
+                        const formattedDelivery = formatAddressString(deliveryAddressData);
+                        if (formattedDelivery) deliveryText = formattedDelivery;
                     }
+                    
+                    const message = `Pickup Address: ${pickupText}%0A%0ADelivery Address: ${deliveryText}`;
                     
                     const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
                     window.location.href = whatsappURL;
