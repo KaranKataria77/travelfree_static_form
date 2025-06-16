@@ -109,6 +109,12 @@
             transform: translateY(1px);
         }
         
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .success-message {
             display: none;
             margin-top: 20px;
@@ -116,6 +122,18 @@
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
             border-radius: 8px;
             text-align: center;
             font-weight: bold;
@@ -130,6 +148,18 @@
             border: 1px solid #ffeaa7;
             border-radius: 8px;
             text-align: center;
+        }
+        
+        .checking-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
         }
         
         .input-container {
@@ -303,15 +333,22 @@
                 <input type="text" id="delivery" name="delivery" required placeholder="Enter delivery location">
             </div>
             
-            <button type="submit">Submit</button>
+            <button type="submit" id="submitBtn">Submit</button>
         </form>
         
         <div class="loading-message" id="loadingMessage">
             Loading Google Maps...
         </div>
         
+        <div class="checking-message" id="checkingMessage">
+            Checking serviceability...
+        </div>
+        
         <div class="success-message" id="successMessage">
-            Form submitted successfully!
+            Service is available! Redirecting to WhatsApp...
+        </div>
+        
+        <div class="error-message" id="errorMessage">
         </div>
     </div>
 
@@ -349,7 +386,7 @@
         function setupDebouncedAutocomplete(fieldId, serviceInstance) {
             const inputElement = document.getElementById(fieldId);
             const inputContainer = inputElement.parentElement;
-            const debounceDelay = 1000; // 1 second delay
+            const debounceDelay = 500; // 1 second delay
             let debounceTimer;
             let currentRequest = null;
             
@@ -596,12 +633,52 @@
             dropdown.style.display = 'block';
         }
         
+        // Check serviceability using the API
+        async function checkServiceability(pickupZip, deliveryZip) {
+            try {
+                const response = await fetch('https://sandbox-apis.prayog.io/serviceability/v1/check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        source_postal_code: pickupZip,
+                        destination_postal_code: deliveryZip,
+                        parcel_category: "ecomm"
+                    })
+                });
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error checking serviceability:', error);
+                return {
+                    success: false,
+                    error: 'Failed to check serviceability. Please try again.'
+                };
+            }
+        }
+        
+        // Show message functions
+        function showMessage(elementId, message, type = 'info') {
+            // Hide all messages first
+            hideAllMessages();
+            
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.style.display = 'block';
+        }
+        
+        function hideAllMessages() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('checkingMessage').style.display = 'none';
+            document.getElementById('loadingMessage').style.display = 'none';
+        }
+        
         // Handle Google Maps API load error
         function handleGoogleMapsError() {
-            document.getElementById('loadingMessage').innerHTML = 'Error loading Google Maps. Please check your API key.';
-            document.getElementById('loadingMessage').style.backgroundColor = '#f8d7da';
-            document.getElementById('loadingMessage').style.color = '#721c24';
-            document.getElementById('loadingMessage').style.borderColor = '#f5c6cb';
+            showMessage('errorMessage', 'Error loading Google Maps. Please check your API key.');
         }
         
         // Show loading message initially
@@ -609,45 +686,110 @@
         
         // Form submission handling
         const form = document.getElementById('addressForm');
-        const successMessage = document.getElementById('successMessage');
+        const submitBtn = document.getElementById('submitBtn');
         
-        form.addEventListener('submit', function(event) {
+        form.addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const pickup = document.getElementById('pickup').value.trim();
             const delivery = document.getElementById('delivery').value.trim();
             
-            if (pickup && delivery) {
-                // Log the structured address data for debugging
-                console.log('FINAL PICKUP DATA:', pickupAddressData);
-                console.log('FINAL DELIVERY DATA:', deliveryAddressData);
-                
-                successMessage.style.display = 'block';
-                
-                setTimeout(() => {
-                    const phoneNumber = '916358250345';
-                    
-                    // Create readable message format
-                    let pickupText = pickup;
-                    let deliveryText = delivery;
-                    
-                    // Use structured format if available, otherwise use original text
-                    if (pickupAddressData) {
-                        const formattedPickup = formatAddressString(pickupAddressData);
-                        if (formattedPickup) pickupText = formattedPickup;
-                    }
-                    
-                    if (deliveryAddressData) {
-                        const formattedDelivery = formatAddressString(deliveryAddressData);
-                        if (formattedDelivery) deliveryText = formattedDelivery;
-                    }
-                    
-                    const message = `Pickup Address: ${pickupText}%0A%0ADelivery Address: ${deliveryText}`;
-                    
-                    const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-                    window.location.href = whatsappURL;
-                }, 1000);
+            if (!pickup || !delivery) {
+                showMessage('errorMessage', 'Please enter both pickup and delivery addresses.');
+                return;
             }
+            
+            // Check if ZIP codes are available
+            let pickupZip = pickupAddressData?.zip;
+            let deliveryZip = deliveryAddressData?.zip;
+            
+            // If ZIP codes are missing, ask user to provide them
+            if (!pickupZip) {
+                const userPickupZip = prompt('Please provide the ZIP code for pickup location:');
+                if (!userPickupZip || !userPickupZip.trim()) {
+                    showMessage('errorMessage', 'Pickup ZIP code is required to check serviceability.');
+                    return;
+                }
+                pickupZip = userPickupZip.trim();
+                // Update the stored data
+                if (!pickupAddressData) pickupAddressData = {};
+                pickupAddressData.zip = pickupZip;
+            }
+            
+            if (!deliveryZip) {
+                const userDeliveryZip = prompt('Please provide the ZIP code for delivery location:');
+                if (!userDeliveryZip || !userDeliveryZip.trim()) {
+                    showMessage('errorMessage', 'Delivery ZIP code is required to check serviceability.');
+                    return;
+                }
+                deliveryZip = userDeliveryZip.trim();
+                // Update the stored data
+                if (!deliveryAddressData) deliveryAddressData = {};
+                deliveryAddressData.zip = deliveryZip;
+            }
+            
+            // Disable submit button and show checking message
+            submitBtn.disabled = true;
+            showMessage('checkingMessage', 'Checking serviceability...');
+            
+            try {
+                // Check serviceability
+                const serviceabilityResult = await checkServiceability(pickupZip, deliveryZip);
+                
+                console.log('Serviceability Result:', serviceabilityResult);
+                
+                if (serviceabilityResult.success && serviceabilityResult.is_serviceable) {
+                    // Service is available
+                    showMessage('successMessage', 'Service is available! Redirecting to WhatsApp...');
+                    
+                    setTimeout(() => {
+                        const phoneNumber = '916358250345';
+                        
+                        // Create readable message format
+                        let pickupText = pickup;
+                        let deliveryText = delivery;
+                        
+                        // Use structured format if available, otherwise use original text
+                        if (pickupAddressData) {
+                            const formattedPickup = formatAddressString(pickupAddressData);
+                            if (formattedPickup) pickupText = formattedPickup;
+                        }
+                        
+                        if (deliveryAddressData) {
+                            const formattedDelivery = formatAddressString(deliveryAddressData);
+                            if (formattedDelivery) deliveryText = formattedDelivery;
+                        }
+                        
+                        const message = `Pickup Address: ${pickupText}%0A%0ADelivery Address: ${deliveryText}`;
+                        
+                        const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+                        window.location.href = whatsappURL;
+                    }, 1500);
+                    
+                } else if (serviceabilityResult.success && !serviceabilityResult.is_serviceable) {
+                    // Service not available
+                    const errorDetails = serviceabilityResult.data;
+                    let errorMessage = 'Sorry, we do not provide service to this location.';
+                    
+                    if (errorDetails && errorDetails.message) {
+                        errorMessage = errorDetails.message;
+                    }
+                    
+                    showMessage('errorMessage', errorMessage);
+                    
+                } else {
+                    // API error or unexpected response
+                    const errorMsg = serviceabilityResult.error || 'Unable to check serviceability. Please try again.';
+                    showMessage('errorMessage', errorMsg);
+                }
+                
+            } catch (error) {
+                console.error('Error during serviceability check:', error);
+                showMessage('errorMessage', 'Error checking serviceability. Please try again.');
+            }
+            
+            // Re-enable submit button
+            submitBtn.disabled = false;
         });
         
         // Prevent zoom on iOS when focusing inputs
