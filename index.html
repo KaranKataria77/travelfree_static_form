@@ -386,7 +386,7 @@
         function setupDebouncedAutocomplete(fieldId, serviceInstance) {
             const inputElement = document.getElementById(fieldId);
             const inputContainer = inputElement.parentElement;
-            const debounceDelay = 500; // 1 second delay
+            const debounceDelay = 1000; // 1 second delay
             let debounceTimer;
             let currentRequest = null;
             
@@ -643,8 +643,7 @@
                     },
                     body: JSON.stringify({
                         source_postal_code: pickupZip,
-                        destination_postal_code: deliveryZip,
-                        parcel_category: "ecomm"
+                        destination_postal_code: deliveryZip
                     })
                 });
                 
@@ -739,32 +738,55 @@
                 console.log('Serviceability Result:', serviceabilityResult);
                 
                 if (serviceabilityResult.success && serviceabilityResult.is_serviceable) {
-                    // Service is available
-                    showMessage('successMessage', 'Service is available! Redirecting to WhatsApp...');
+                    // Service is available - call webhook API
+                    showMessage('successMessage', 'Service is available! Processing your request...');
                     
-                    setTimeout(() => {
-                        const phoneNumber = '916358250345';
+                    // Prepare pickup address data
+                    const pickupData = {
+                        type: "PICKUP",
+                        zip: pickupZip,
+                        landmark: pickupAddressData?.landmark || "",
+                        city: pickupAddressData?.city || "",
+                        state: pickupAddressData?.state || "",
+                        country: pickupAddressData?.country || "India"
+                    };
+                    
+                    // Prepare delivery address data
+                    const deliveryData = {
+                        type: "DELIVERY",
+                        zip: deliveryZip,
+                        landmark: deliveryAddressData?.landmark || "",
+                        city: deliveryAddressData?.city || "",
+                        state: deliveryAddressData?.state || "",
+                        country: deliveryAddressData?.country || "India"
+                    };
+                    
+                    // Call webhook API
+                    try {
+                        const webhookResponse = await fetch('http://sandbox-apis.prayog.io/api/v1/session/pickup-address', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                pickup: pickupData,
+                                delivery: deliveryData
+                            })
+                        });
                         
-                        // Create readable message format
-                        let pickupText = pickup;
-                        let deliveryText = delivery;
+                        const webhookResult = await webhookResponse.json();
+                        console.log('Webhook Response:', webhookResult);
                         
-                        // Use structured format if available, otherwise use original text
-                        if (pickupAddressData) {
-                            const formattedPickup = formatAddressString(pickupAddressData);
-                            if (formattedPickup) pickupText = formattedPickup;
+                        if (webhookResponse.ok) {
+                            showMessage('successMessage', 'Request submitted successfully! We will contact you soon.');
+                        } else {
+                            showMessage('errorMessage', 'Failed to submit request. Please try again.');
                         }
                         
-                        if (deliveryAddressData) {
-                            const formattedDelivery = formatAddressString(deliveryAddressData);
-                            if (formattedDelivery) deliveryText = formattedDelivery;
-                        }
-                        
-                        const message = `Pickup Address: ${pickupText}%0A%0ADelivery Address: ${deliveryText}`;
-                        
-                        const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-                        window.location.href = whatsappURL;
-                    }, 1500);
+                    } catch (webhookError) {
+                        console.error('Webhook API Error:', webhookError);
+                        showMessage('errorMessage', 'Failed to submit request. Please try again.');
+                    }
                     
                 } else if (serviceabilityResult.success && !serviceabilityResult.is_serviceable) {
                     // Service not available
