@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,7 @@
         * {
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -19,7 +20,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .container {
             width: 100%;
             max-width: 500px;
@@ -28,14 +29,14 @@
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
-        
+
         h2 {
             text-align: center;
             margin-bottom: 30px;
             color: #333;
             font-size: 1.5rem;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
@@ -43,7 +44,7 @@
             color: #555;
             font-size: 0.95rem;
         }
-        
+
         input[type="text"] {
             width: 100%;
             padding: 12px 15px;
@@ -53,13 +54,13 @@
             font-size: 16px;
             transition: border-color 0.3s ease;
         }
-        
+
         input[type="text"]:focus {
             outline: none;
             border-color: #007bff;
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
-        
+
         /* Google Places Autocomplete styling */
         .pac-container {
             border-radius: 8px;
@@ -68,26 +69,26 @@
             font-size: 14px;
             font-family: Arial, sans-serif;
         }
-        
+
         .pac-item {
             padding: 10px 15px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
         }
-        
+
         .pac-item:hover {
             background-color: #f8f9fa;
         }
-        
+
         .pac-item-selected {
             background-color: #007bff;
             color: white;
         }
-        
+
         .pac-matched {
             font-weight: bold;
         }
-        
+
         button {
             width: 100%;
             padding: 15px;
@@ -100,21 +101,21 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        
+
         button:hover {
             background-color: #0056b3;
         }
-        
+
         button:active {
             transform: translateY(1px);
         }
-        
+
         button:disabled {
             background-color: #6c757d;
             cursor: not-allowed;
             transform: none;
         }
-        
+
         .success-message {
             display: none;
             margin-top: 20px;
@@ -126,7 +127,7 @@
             text-align: center;
             font-weight: bold;
         }
-        
+
         .error-message {
             display: none;
             margin-top: 20px;
@@ -138,7 +139,7 @@
             text-align: center;
             font-weight: bold;
         }
-        
+
         .loading-message {
             display: none;
             margin-top: 20px;
@@ -149,7 +150,7 @@
             border-radius: 8px;
             text-align: center;
         }
-        
+
         .checking-message {
             display: none;
             margin-top: 20px;
@@ -161,16 +162,16 @@
             text-align: center;
             font-weight: bold;
         }
-        
+
         .input-container {
             position: relative;
             margin-bottom: 20px;
         }
-        
+
         .input-container input[type="text"] {
             margin-bottom: 0;
         }
-        
+
         .custom-autocomplete-dropdown {
             position: absolute;
             top: 100%;
@@ -184,9 +185,9 @@
             overflow-y: auto;
             z-index: 1000;
             display: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .autocomplete-item {
             padding: 12px 15px;
             cursor: pointer;
@@ -194,131 +195,136 @@
             font-size: 14px;
             line-height: 1.4;
         }
-        
+
         .autocomplete-item:hover {
             background-color: #f8f9fa;
         }
-        
+
         .autocomplete-item:last-child {
             border-bottom: none;
         }
-        
+
         /* Mobile First Responsive Design */
         @media (max-width: 480px) {
             body {
                 padding: 5px;
             }
-            
+
             .container {
                 padding: 20px 15px;
                 margin: 10px;
                 border-radius: 8px;
             }
-            
+
             h2 {
                 font-size: 1.3rem;
                 margin-bottom: 25px;
             }
-            
+
             input[type="text"] {
                 padding: 14px 12px;
-                font-size: 16px; /* Prevents zoom on iOS */
+                font-size: 16px;
+                /* Prevents zoom on iOS */
                 margin-bottom: 18px;
             }
-            
+
             button {
                 padding: 16px;
                 font-size: 16px;
             }
-            
+
             label {
                 font-size: 0.9rem;
             }
-            
+
             .pac-container {
                 font-size: 13px;
             }
-            
+
             .pac-item {
                 padding: 12px 15px;
             }
         }
-        
+
         /* Extra small screens */
         @media (max-width: 320px) {
             .container {
                 padding: 15px 10px;
             }
-            
+
             h2 {
                 font-size: 1.2rem;
             }
-            
+
             input[type="text"] {
                 padding: 12px 10px;
             }
-            
+
             button {
                 padding: 14px;
                 font-size: 15px;
             }
         }
-        
+
         /* Tablet */
         @media (min-width: 481px) and (max-width: 768px) {
             .container {
                 padding: 35px 25px;
             }
-            
+
             h2 {
                 font-size: 1.6rem;
             }
         }
-        
+
         /* Desktop */
         @media (min-width: 769px) {
             body {
                 padding: 20px;
             }
-            
+
             .container {
                 padding: 40px;
             }
-            
+
             h2 {
                 font-size: 1.7rem;
                 margin-bottom: 35px;
             }
         }
-        
+
         /* High DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            input[type="text"], button {
+        @media (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 192dpi) {
+
+            input[type="text"],
+            button {
                 border-width: 0.5px;
             }
         }
-        
+
         /* Landscape orientation on mobile */
         @media (max-height: 500px) and (orientation: landscape) {
             body {
                 align-items: flex-start;
                 padding-top: 10px;
             }
-            
+
             .container {
                 margin: 10px auto;
             }
-            
+
             h2 {
                 margin-bottom: 20px;
             }
-            
+
             input[type="text"] {
                 margin-bottom: 15px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Enter Addresses</h2>
@@ -327,27 +333,27 @@
                 <label for="pickup">Pickup Address</label>
                 <input type="text" id="pickup" name="pickup" required placeholder="Enter pickup location">
             </div>
-            
+
             <div class="input-container">
                 <label for="delivery">Delivery Address</label>
                 <input type="text" id="delivery" name="delivery" required placeholder="Enter delivery location">
             </div>
-            
+
             <button type="submit" id="submitBtn">Submit</button>
         </form>
-        
+
         <div class="loading-message" id="loadingMessage">
             Loading Google Maps...
         </div>
-        
+
         <div class="checking-message" id="checkingMessage">
             Checking serviceability...
         </div>
-        
+
         <div class="success-message" id="successMessage">
             Service is available! Redirecting to WhatsApp...
         </div>
-        
+
         <div class="error-message" id="errorMessage">
         </div>
     </div>
@@ -359,29 +365,29 @@
         let pickupService;
         let deliveryService;
         let customDropdowns = {};
-        
+
         // Store structured address data
         let pickupAddressData = null;
         let deliveryAddressData = null;
-        
+
         // Initialize Google Maps Places Autocomplete
         function initAutocomplete() {
             // Initialize Places Service for custom debounced requests
             pickupService = new google.maps.places.AutocompleteService();
             deliveryService = new google.maps.places.AutocompleteService();
-            
+
             // Initialize Places Details Service to get structured address components
             const map = new google.maps.Map(document.createElement('div'));
             window.placesDetailService = new google.maps.places.PlacesService(map);
-            
+
             // Set up custom debounced autocomplete for both fields
             setupDebouncedAutocomplete('pickup', pickupService);
             setupDebouncedAutocomplete('delivery', deliveryService);
-            
+
             // Hide loading message
             document.getElementById('loadingMessage').style.display = 'none';
         }
-        
+
         // Custom autocomplete with proper debouncing
         function setupDebouncedAutocomplete(fieldId, serviceInstance) {
             const inputElement = document.getElementById(fieldId);
@@ -389,41 +395,41 @@
             const debounceDelay = 1000; // 1 second delay
             let debounceTimer;
             let currentRequest = null;
-            
+
             // Create custom dropdown container
             const dropdown = document.createElement('div');
             dropdown.className = 'custom-autocomplete-dropdown';
-            
+
             // Append dropdown to the input container (which is already positioned relative)
             inputContainer.appendChild(dropdown);
             customDropdowns[fieldId] = dropdown;
-            
+
             // Clear previous timer and set new one
             inputElement.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
-                
+
                 // Clear existing timer
                 clearTimeout(debounceTimer);
-                
+
                 // Hide dropdown if query is too short
                 if (query.length < 3) {
                     dropdown.style.display = 'none';
                     return;
                 }
-                
+
                 // Set new timer for 1 second delay
                 debounceTimer = setTimeout(() => {
                     searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId);
                 }, debounceDelay);
             });
-            
+
             // Hide dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (!inputElement.contains(e.target) && !dropdown.contains(e.target)) {
                     dropdown.style.display = 'none';
                 }
             });
-            
+
             // Hide dropdown on input blur (with delay to allow clicks)
             inputElement.addEventListener('blur', () => {
                 setTimeout(() => {
@@ -432,7 +438,7 @@
                     }
                 }, 200);
             });
-            
+
             // Show dropdown on input focus if it has content
             inputElement.addEventListener('focus', () => {
                 if (dropdown.children.length > 0) {
@@ -440,7 +446,7 @@
                 }
             });
         }
-        
+
         // Search places with debouncing
         function searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId) {
             const request = {
@@ -452,9 +458,9 @@
                 region: 'IN', // Bias results towards India
                 strictBounds: false
             };
-            
+
             console.log(`Searching for "${query}" in ${fieldId} field (after 1s delay)`);
-            
+
             serviceInstance.getPlacePredictions(request, (predictions, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
                     // Take only first 5 results after API call to save processing
@@ -465,7 +471,7 @@
                 }
             });
         }
-        
+
         // Extract structured address components from Google Places API
         function extractAddressComponents(place) {
             const addressData = {
@@ -475,20 +481,20 @@
                 state: '',
                 country: 'India' // Default since we're restricting to India
             };
-            
+
             if (!place.address_components) {
                 return addressData;
             }
-            
+
             // Map Google Places API component types to our structure
             place.address_components.forEach(component => {
                 const types = component.types;
-                
+
                 // Postal Code
                 if (types.includes('postal_code')) {
                     addressData.zip = component.long_name;
                 }
-                
+
                 // City - can be locality, sublocality, or administrative_area_level_2
                 else if (types.includes('locality')) {
                     addressData.city = component.long_name;
@@ -499,21 +505,21 @@
                 else if (types.includes('administrative_area_level_2') && !addressData.city) {
                     addressData.city = component.long_name;
                 }
-                
+
                 // State
                 else if (types.includes('administrative_area_level_1')) {
                     addressData.state = component.long_name;
                 }
-                
+
                 // Country
                 else if (types.includes('country')) {
                     addressData.country = component.long_name;
                 }
-                
+
                 // Landmark - can be sublocality, neighborhood, or premise
-                else if (types.includes('sublocality_level_2') || 
-                         types.includes('sublocality_level_3') ||
-                         types.includes('neighborhood')) {
+                else if (types.includes('sublocality_level_2') ||
+                    types.includes('sublocality_level_3') ||
+                    types.includes('neighborhood')) {
                     if (!addressData.landmark) {
                         addressData.landmark = component.long_name;
                     }
@@ -524,7 +530,7 @@
                     }
                 }
             });
-            
+
             // If no landmark found, try to use the place name as landmark
             if (!addressData.landmark && place.name) {
                 // Only use place name if it's not the same as the city
@@ -532,7 +538,7 @@
                     addressData.landmark = place.name;
                 }
             }
-            
+
             // Fallback: if still no landmark, try to extract from formatted address
             if (!addressData.landmark && place.formatted_address) {
                 const addressParts = place.formatted_address.split(',');
@@ -544,29 +550,29 @@
                     }
                 }
             }
-            
+
             return addressData;
         }
-        
+
         // Get detailed place information with structured address components
         function getPlaceDetails(placeId, fieldId, callback) {
             const request = {
                 placeId: placeId,
                 fields: ['address_components', 'name']
             };
-            
+
             window.placesDetailService.getDetails(request, (place, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     // Extract structured address components
                     const structuredAddress = extractAddressComponents(place);
-                    
+
                     // Store the structured data based on field
                     if (fieldId === 'pickup') {
                         pickupAddressData = structuredAddress;
                     } else if (fieldId === 'delivery') {
                         deliveryAddressData = structuredAddress;
                     }
-                    
+
                     callback({
                         structuredData: structuredAddress
                     });
@@ -576,49 +582,49 @@
                 }
             });
         }
-        
+
         // Convert structured address data to readable string format
         function formatAddressString(addressData) {
             if (!addressData) return '';
-            
+
             const parts = [];
-            
+
             if (addressData.landmark) parts.push(addressData.landmark);
             if (addressData.city) parts.push(addressData.city);
             if (addressData.state) parts.push(addressData.state);
             if (addressData.zip) parts.push(addressData.zip);
             if (addressData.country) parts.push(addressData.country);
-            
+
             return parts.filter(part => part.trim() !== '').join(', ');
         }
-        
+
         // Display predictions in custom dropdown
         function displayPredictions(predictions, dropdown, inputElement, fieldId) {
             dropdown.innerHTML = '';
-            
+
             // predictions already limited to 5 from the API response
             predictions.forEach(prediction => {
                 const item = document.createElement('div');
                 item.className = 'autocomplete-item';
-                
+
                 // Show the prediction description directly
                 const mainText = prediction.structured_formatting.main_text;
                 const secondaryText = prediction.structured_formatting.secondary_text;
-                
+
                 item.innerHTML = `
                     <div style="font-weight: bold; color: #333;">${mainText}</div>
                     <div style="color: #666; font-size: 12px;">${secondaryText || ''}</div>
                 `;
-                
+
                 // Handle selection
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     // Show user the description immediately
                     inputElement.value = prediction.description;
                     dropdown.style.display = 'none';
-                    
+
                     // Get structured data in background
                     getPlaceDetails(prediction.place_id, fieldId, (placeDetails) => {
                         if (placeDetails) {
@@ -626,13 +632,13 @@
                         }
                     });
                 });
-                
+
                 dropdown.appendChild(item);
             });
-            
+
             dropdown.style.display = 'block';
         }
-        
+
         // Check serviceability using the API
         async function checkServiceability(pickupZip, deliveryZip) {
             try {
@@ -646,7 +652,7 @@
                         destination_postal_code: deliveryZip
                     })
                 });
-                
+
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -657,51 +663,65 @@
                 };
             }
         }
-        
+
         // Show message functions
         function showMessage(elementId, message, type = 'info') {
             // Hide all messages first
             hideAllMessages();
-            
+
             const element = document.getElementById(elementId);
             element.innerHTML = message;
             element.style.display = 'block';
         }
-        
+
         function hideAllMessages() {
             document.getElementById('successMessage').style.display = 'none';
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('checkingMessage').style.display = 'none';
             document.getElementById('loadingMessage').style.display = 'none';
         }
-        
+
         // Handle Google Maps API load error
         function handleGoogleMapsError() {
             showMessage('errorMessage', 'Error loading Google Maps. Please check your API key.');
         }
-        
+
         // Show loading message initially
         document.getElementById('loadingMessage').style.display = 'block';
-        
+
         // Form submission handling
         const form = document.getElementById('addressForm');
         const submitBtn = document.getElementById('submitBtn');
-        
-        form.addEventListener('submit', async function(event) {
+
+        // Function to format structured address for WhatsApp
+        function formatStructuredAddress(addressData, addressType) {
+            if (!addressData) return `${addressType}: Not available`;
+
+            let formattedAddress = `${addressType}:\n`;
+            formattedAddress += `    zip: ${addressData.zip || 'N/A'}\n`;
+            formattedAddress += `    landmark: "${addressData.landmark || 'N/A'}"\n`;
+            formattedAddress += `    city: "${addressData.city || 'N/A'}"\n`;
+            formattedAddress += `    state: "${addressData.state || 'N/A'}"\n`;
+            formattedAddress += `    country: "${addressData.country || 'N/A'}"`;
+
+            return formattedAddress;
+        }
+
+        form.addEventListener('submit', async function (event) {
             event.preventDefault();
-            
+
             const pickup = document.getElementById('pickup').value.trim();
             const delivery = document.getElementById('delivery').value.trim();
-            
+
             if (!pickup || !delivery) {
                 showMessage('errorMessage', 'Please enter both pickup and delivery addresses.');
                 return;
             }
-            
+
             // Check if ZIP codes are available
             let pickupZip = pickupAddressData?.zip;
             let deliveryZip = deliveryAddressData?.zip;
-            
+
             // If ZIP codes are missing, ask user to provide them
             if (!pickupZip) {
                 const userPickupZip = prompt('Please provide the ZIP code for pickup location:');
@@ -714,7 +734,7 @@
                 if (!pickupAddressData) pickupAddressData = {};
                 pickupAddressData.zip = pickupZip;
             }
-            
+
             if (!deliveryZip) {
                 const userDeliveryZip = prompt('Please provide the ZIP code for delivery location:');
                 if (!userDeliveryZip || !userDeliveryZip.trim()) {
@@ -726,89 +746,81 @@
                 if (!deliveryAddressData) deliveryAddressData = {};
                 deliveryAddressData.zip = deliveryZip;
             }
-            
+
             // Disable submit button and show checking message
             submitBtn.disabled = true;
             showMessage('checkingMessage', 'Checking serviceability...');
-            
+
             try {
                 // Check serviceability
                 const serviceabilityResult = await checkServiceability(pickupZip, deliveryZip);
-                
+
                 console.log('Serviceability Result:', serviceabilityResult);
-                
+
                 if (serviceabilityResult.success && serviceabilityResult.is_serviceable) {
                     // Service is available
                     showMessage('successMessage', 'Service is available! Redirecting to WhatsApp...');
-                    
+
                     setTimeout(() => {
                         const phoneNumber = '916358250345';
-                        
-                        // Create readable message format
-                        let pickupText = pickup;
-                        let deliveryText = delivery;
-                        
-                        // Use structured format if available, otherwise use original text
-                        if (pickupAddressData) {
-                            const formattedPickup = formatAddressString(pickupAddressData);
-                            if (formattedPickup) pickupText = formattedPickup;
-                        }
-                        
-                        if (deliveryAddressData) {
-                            const formattedDelivery = formatAddressString(deliveryAddressData);
-                            if (formattedDelivery) deliveryText = formattedDelivery;
-                        }
-                        
-                        const message = `Pickup Address: ${pickupText}%0A%0ADelivery Address: ${deliveryText}`;
-                        
+
+                        // Create structured message format
+                        const pickupMessage = formatStructuredAddress(pickupAddressData, 'pickup');
+                        const deliveryMessage = formatStructuredAddress(deliveryAddressData, 'delivery');
+
+                        // Combine both addresses with proper WhatsApp formatting (%0A for line breaks)
+                        const message = encodeURIComponent(`${pickupMessage}\n\n${deliveryMessage}`);
+
                         const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
                         window.location.href = whatsappURL;
                     }, 1500);
-                    
+
                 } else if (serviceabilityResult.success && !serviceabilityResult.is_serviceable) {
                     // Service not available
                     const errorDetails = serviceabilityResult.data;
                     let errorMessage = 'Sorry, we do not provide service to this location.';
-                    
+
                     if (errorDetails && errorDetails.message) {
                         errorMessage = errorDetails.message;
                     }
-                    
+
                     showMessage('errorMessage', errorMessage);
-                    
+
                 } else {
                     // API error or unexpected response
                     const errorMsg = serviceabilityResult.error || 'Unable to check serviceability. Please try again.';
                     showMessage('errorMessage', errorMsg);
                 }
-                
+
             } catch (error) {
                 console.error('Error during serviceability check:', error);
                 showMessage('errorMessage', 'Error checking serviceability. Please try again.');
             }
-            
+
             // Re-enable submit button
             submitBtn.disabled = false;
         });
-        
+
         // Prevent zoom on iOS when focusing inputs
         const inputs = document.querySelectorAll('input[type="text"]');
         inputs.forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 if (window.innerWidth < 768) {
                     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
                 }
             });
-            
-            input.addEventListener('blur', function() {
+
+            input.addEventListener('blur', function () {
                 document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0');
             });
         });
     </script>
-    
+
     <!-- Load Google Maps Places API -->
     <!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUDgijpqock4xtLQrgOHIkPAdQF8FqaF8&libraries=places&callback=initAutocomplete&loading=async" 
-            onerror="handleGoogleMapsError()"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUDgijpqock4xtLQrgOHIkPAdQF8FqaF8&libraries=places&callback=initAutocomplete&loading=async"
+        onerror="handleGoogleMapsError()"></script>
 </body>
+
 </html>
