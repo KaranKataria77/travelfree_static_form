@@ -447,15 +447,15 @@
             });
         }
 
-        // Search places with debouncing
+        // Search places with debouncing - FIXED VERSION
         function searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId) {
             const request = {
                 input: query,
-                types: ['geocode'], // More specific type to reduce results
-                componentRestrictions: { country: 'IN' },
-                // These additional parameters help optimize results
+                types: ['geocode'],
+                componentRestrictions: { country: 'IN' }, // Restrict to India only
                 sessionToken: new google.maps.places.AutocompleteSessionToken(),
-                region: 'IN', // Bias results towards India
+                // REMOVED: region: 'IN' - this was causing location bias
+                // REMOVED: location and radius parameters that might bias results
                 strictBounds: false
             };
 
@@ -558,7 +558,7 @@
         function getPlaceDetails(placeId, fieldId, callback) {
             const request = {
                 placeId: placeId,
-                fields: ['address_components', 'name']
+                fields: ['address_components', 'name', 'formatted_address']
             };
 
             window.placesDetailService.getDetails(request, (place, status) => {
