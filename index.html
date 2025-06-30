@@ -289,8 +289,8 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="pickupLine2">Address Line 2 <span class="required">*</span></label>
-                        <input type="text" id="pickupLine2" name="pickupLine2" required placeholder="Street, Area">
+                        <label for="pickupLine2">Address Line 2 <span class="optional">(Optional)</span></label>
+                        <input type="text" id="pickupLine2" name="pickupLine2" placeholder="Street, Area">
                     </div>
                 </div>
 
@@ -337,8 +337,8 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="deliveryLine2">Address Line 2 <span class="required">*</span></label>
-                        <input type="text" id="deliveryLine2" name="deliveryLine2" required placeholder="Street, Area">
+                        <label for="deliveryLine2">Address Line 2 <span class="optional">(Optional)</span></label>
+                        <input type="text" id="deliveryLine2" name="deliveryLine2" placeholder="Street, Area">
                     </div>
                 </div>
 
@@ -696,12 +696,10 @@
             // Validate required fields
             const requiredFields = [
                 { value: pickupData.line1, name: 'Pickup Address Line 1' },
-                { value: pickupData.line2, name: 'Pickup Address Line 2' },
                 { value: pickupData.city, name: 'Pickup City' },
                 { value: pickupData.pincode, name: 'Pickup Pincode' },
                 { value: pickupData.state, name: 'Pickup State' },
                 { value: deliveryData.line1, name: 'Delivery Address Line 1' },
-                { value: deliveryData.line2, name: 'Delivery Address Line 2' },
                 { value: deliveryData.city, name: 'Delivery City' },
                 { value: deliveryData.pincode, name: 'Delivery Pincode' },
                 { value: deliveryData.state, name: 'Delivery State' }
@@ -780,7 +778,9 @@
         function formatAddressForWhatsApp(addressData, title) {
             let formatted = `${title}:\n`;
             formatted += `${addressData.line1}\n`;
-            formatted += `${addressData.line2}\n`;
+            if (addressData.line2) {
+                formatted += `${addressData.line2}\n`;
+            }
             if (addressData.landmark) {
                 formatted += `Near: ${addressData.landmark}\n`;
             }
