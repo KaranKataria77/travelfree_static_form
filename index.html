@@ -23,7 +23,7 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             background: white;
             padding: 30px;
             border-radius: 12px;
@@ -37,6 +37,39 @@
             font-size: 1.5rem;
         }
 
+        .address-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .address-section h3 {
+            margin: 0 0 20px 0;
+            color: #495057;
+            font-size: 1.2rem;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            flex: 100%;
+        }
+
         label {
             display: block;
             margin-bottom: 8px;
@@ -45,10 +78,20 @@
             font-size: 0.95rem;
         }
 
+        label .required {
+            color: #dc3545;
+            margin-left: 2px;
+        }
+
+        label .optional {
+            color: #6c757d;
+            font-weight: normal;
+            font-size: 0.85rem;
+        }
+
         input[type="text"] {
             width: 100%;
             padding: 12px 15px;
-            margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
@@ -61,32 +104,44 @@
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
 
-        /* Google Places Autocomplete styling */
-        .pac-container {
-            border-radius: 8px;
+        input[type="text"]:invalid {
+            border-color: #dc3545;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .custom-autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
             border: 1px solid #ddd;
-            margin-top: 2px;
-            font-size: 14px;
-            font-family: Arial, sans-serif;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .pac-item {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eee;
+        .autocomplete-item {
+            padding: 12px 15px;
             cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
-        .pac-item:hover {
+        .autocomplete-item:hover {
             background-color: #f8f9fa;
         }
 
-        .pac-item-selected {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .pac-matched {
-            font-weight: bold;
+        .autocomplete-item:last-child {
+            border-bottom: none;
         }
 
         button {
@@ -100,6 +155,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 20px;
         }
 
         button:hover {
@@ -163,163 +219,54 @@
             font-weight: bold;
         }
 
-        .input-container {
-            position: relative;
-            margin-bottom: 20px;
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .container {
+                padding: 20px 15px;
+                margin: 10px;
+            }
+
+            .address-section {
+                padding: 20px 15px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .address-section h3 {
+                font-size: 1.1rem;
+            }
         }
 
-        .input-container input[type="text"] {
-            margin-bottom: 0;
-        }
-
-        .custom-autocomplete-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .autocomplete-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .autocomplete-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .autocomplete-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Mobile First Responsive Design */
         @media (max-width: 480px) {
             body {
                 padding: 5px;
             }
 
             .container {
-                padding: 20px 15px;
-                margin: 10px;
-                border-radius: 8px;
+                margin: 5px;
+                padding: 15px 10px;
             }
 
-            h2 {
-                font-size: 1.3rem;
+            .address-section {
+                padding: 15px 10px;
                 margin-bottom: 25px;
             }
 
             input[type="text"] {
                 padding: 14px 12px;
                 font-size: 16px;
-                /* Prevents zoom on iOS */
-                margin-bottom: 18px;
             }
 
             button {
                 padding: 16px;
                 font-size: 16px;
-            }
-
-            label {
-                font-size: 0.9rem;
-            }
-
-            .pac-container {
-                font-size: 13px;
-            }
-
-            .pac-item {
-                padding: 12px 15px;
-            }
-        }
-
-        /* Extra small screens */
-        @media (max-width: 320px) {
-            .container {
-                padding: 15px 10px;
-            }
-
-            h2 {
-                font-size: 1.2rem;
-            }
-
-            input[type="text"] {
-                padding: 12px 10px;
-            }
-
-            button {
-                padding: 14px;
-                font-size: 15px;
-            }
-        }
-
-        /* Tablet */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .container {
-                padding: 35px 25px;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-            }
-        }
-
-        /* Desktop */
-        @media (min-width: 769px) {
-            body {
-                padding: 20px;
-            }
-
-            .container {
-                padding: 40px;
-            }
-
-            h2 {
-                font-size: 1.7rem;
-                margin-bottom: 35px;
-            }
-        }
-
-        /* High DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2),
-        (min-resolution: 192dpi) {
-
-            input[type="text"],
-            button {
-                border-width: 0.5px;
-            }
-        }
-
-        /* Landscape orientation on mobile */
-        @media (max-height: 500px) and (orientation: landscape) {
-            body {
-                align-items: flex-start;
-                padding-top: 10px;
-            }
-
-            .container {
-                margin: 10px auto;
-            }
-
-            h2 {
-                margin-bottom: 20px;
-            }
-
-            input[type="text"] {
-                margin-bottom: 15px;
             }
         }
     </style>
@@ -329,17 +276,103 @@
     <div class="container">
         <h2>Enter Addresses</h2>
         <form id="addressForm">
-            <div class="input-container">
-                <label for="pickup">Pickup Address</label>
-                <input type="text" id="pickup" name="pickup" required placeholder="Enter pickup location">
+            <!-- Pickup Address Section -->
+            <div class="address-section">
+                <h3>Pickup Address</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickupLine1">Address Line 1 <span class="required">*</span></label>
+                        <input type="text" id="pickupLine1" name="pickupLine1" required placeholder="House/Flat No, Building">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickupLine2">Address Line 2 <span class="required">*</span></label>
+                        <input type="text" id="pickupLine2" name="pickupLine2" required placeholder="Street, Area">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickupLandmark">Landmark <span class="optional">(Optional)</span></label>
+                        <input type="text" id="pickupLandmark" name="pickupLandmark" placeholder="Near landmark">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickupCity">City <span class="required">*</span></label>
+                        <div class="input-container">
+                            <input type="text" id="pickupCity" name="pickupCity" required placeholder="Enter city">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pickupPincode">Pincode <span class="required">*</span></label>
+                        <div class="input-container">
+                            <input type="text" id="pickupPincode" name="pickupPincode" required placeholder="Enter pincode" pattern="[0-9]{6}" maxlength="6">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickupState">State <span class="required">*</span></label>
+                        <input type="text" id="pickupState" name="pickupState" required placeholder="Enter state">
+                    </div>
+                </div>
             </div>
 
-            <div class="input-container">
-                <label for="delivery">Delivery Address</label>
-                <input type="text" id="delivery" name="delivery" required placeholder="Enter delivery location">
+            <!-- Delivery Address Section -->
+            <div class="address-section">
+                <h3>Delivery Address</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryLine1">Address Line 1 <span class="required">*</span></label>
+                        <input type="text" id="deliveryLine1" name="deliveryLine1" required placeholder="House/Flat No, Building">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryLine2">Address Line 2 <span class="required">*</span></label>
+                        <input type="text" id="deliveryLine2" name="deliveryLine2" required placeholder="Street, Area">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryLandmark">Landmark <span class="optional">(Optional)</span></label>
+                        <input type="text" id="deliveryLandmark" name="deliveryLandmark" placeholder="Near landmark">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryCity">City <span class="required">*</span></label>
+                        <div class="input-container">
+                            <input type="text" id="deliveryCity" name="deliveryCity" required placeholder="Enter city">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryPincode">Pincode <span class="required">*</span></label>
+                        <div class="input-container">
+                            <input type="text" id="deliveryPincode" name="deliveryPincode" required placeholder="Enter pincode" pattern="[0-9]{6}" maxlength="6">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryState">State <span class="required">*</span></label>
+                        <input type="text" id="deliveryState" name="deliveryState" required placeholder="Enter state">
+                    </div>
+                </div>
             </div>
 
-            <button type="submit" id="submitBtn">Submit</button>
+            <button type="submit" id="submitBtn">Check Serviceability & Submit</button>
         </form>
 
         <div class="loading-message" id="loadingMessage">
@@ -358,79 +391,105 @@
         </div>
     </div>
 
-    <!-- Google Maps Places API -->
     <script>
-        let pickupAutocomplete;
-        let deliveryAutocomplete;
-        let pickupService;
-        let deliveryService;
+        let placesService;
+        let geocoder;
         let customDropdowns = {};
 
-        // Store structured address data
-        let pickupAddressData = null;
-        let deliveryAddressData = null;
-
-        // Initialize Google Maps Places Autocomplete
+        // Initialize Google Maps Services
         function initAutocomplete() {
-            // Initialize Places Service for custom debounced requests
-            pickupService = new google.maps.places.AutocompleteService();
-            deliveryService = new google.maps.places.AutocompleteService();
+            placesService = new google.maps.places.AutocompleteService();
+            geocoder = new google.maps.Geocoder();
 
-            // Initialize Places Details Service to get structured address components
-            const map = new google.maps.Map(document.createElement('div'));
-            window.placesDetailService = new google.maps.places.PlacesService(map);
+            // Set up autocomplete for city fields
+            setupCityAutocomplete('pickupCity', 'pickupPincode', 'pickupState');
+            setupCityAutocomplete('deliveryCity', 'deliveryPincode', 'deliveryState');
 
-            // Set up custom debounced autocomplete for both fields
-            setupDebouncedAutocomplete('pickup', pickupService);
-            setupDebouncedAutocomplete('delivery', deliveryService);
+            // Set up pincode validation and auto-fill
+            setupPincodeAutocomplete('pickupPincode', 'pickupCity', 'pickupState');
+            setupPincodeAutocomplete('deliveryPincode', 'deliveryCity', 'deliveryState');
 
             // Hide loading message
             document.getElementById('loadingMessage').style.display = 'none';
         }
 
-        // Custom autocomplete with proper debouncing
-        function setupDebouncedAutocomplete(fieldId, serviceInstance) {
-            const inputElement = document.getElementById(fieldId);
-            const inputContainer = inputElement.parentElement;
-            const debounceDelay = 1000; // 1 second delay
+        // Setup city autocomplete with state auto-fill
+        function setupCityAutocomplete(cityFieldId, pincodeFieldId, stateFieldId) {
+            const cityInput = document.getElementById(cityFieldId);
+            const pincodeInput = document.getElementById(pincodeFieldId);
+            const stateInput = document.getElementById(stateFieldId);
+            const container = cityInput.parentElement;
             let debounceTimer;
-            let currentRequest = null;
 
-            // Create custom dropdown container
+            // Create dropdown
             const dropdown = document.createElement('div');
             dropdown.className = 'custom-autocomplete-dropdown';
+            container.appendChild(dropdown);
+            customDropdowns[cityFieldId] = dropdown;
 
-            // Append dropdown to the input container (which is already positioned relative)
-            inputContainer.appendChild(dropdown);
-            customDropdowns[fieldId] = dropdown;
-
-            // Clear previous timer and set new one
-            inputElement.addEventListener('input', (e) => {
+            cityInput.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
-
-                // Clear existing timer
                 clearTimeout(debounceTimer);
 
-                // Hide dropdown if query is too short
+                if (query.length < 2) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    searchCities(query, dropdown, cityInput, stateInput);
+                }, 500);
+            });
+
+            // Handle dropdown interactions
+            setupDropdownInteractions(cityInput, dropdown);
+        }
+
+        // Setup pincode autocomplete with city and state auto-fill
+        function setupPincodeAutocomplete(pincodeFieldId, cityFieldId, stateFieldId) {
+            const pincodeInput = document.getElementById(pincodeFieldId);
+            const cityInput = document.getElementById(cityFieldId);
+            const stateInput = document.getElementById(stateFieldId);
+            const container = pincodeInput.parentElement;
+            let debounceTimer;
+
+            // Create dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'custom-autocomplete-dropdown';
+            container.appendChild(dropdown);
+            customDropdowns[pincodeFieldId] = dropdown;
+
+            pincodeInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                clearTimeout(debounceTimer);
+
+                // Only allow numeric input
+                e.target.value = query.replace(/[^0-9]/g, '');
+
                 if (query.length < 3) {
                     dropdown.style.display = 'none';
                     return;
                 }
 
-                // Set new timer for 1 second delay
                 debounceTimer = setTimeout(() => {
-                    searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId);
-                }, debounceDelay);
+                    if (query.length >= 3) {
+                        searchPincodes(query, dropdown, pincodeInput, cityInput, stateInput);
+                    }
+                }, 500);
             });
 
-            // Hide dropdown when clicking outside
+            // Handle dropdown interactions
+            setupDropdownInteractions(pincodeInput, dropdown);
+        }
+
+        // Common dropdown interaction setup
+        function setupDropdownInteractions(inputElement, dropdown) {
             document.addEventListener('click', (e) => {
                 if (!inputElement.contains(e.target) && !dropdown.contains(e.target)) {
                     dropdown.style.display = 'none';
                 }
             });
 
-            // Hide dropdown on input blur (with delay to allow clicks)
             inputElement.addEventListener('blur', () => {
                 setTimeout(() => {
                     if (!dropdown.matches(':hover')) {
@@ -439,7 +498,6 @@
                 }, 200);
             });
 
-            // Show dropdown on input focus if it has content
             inputElement.addEventListener('focus', () => {
                 if (dropdown.children.length > 0) {
                     dropdown.style.display = 'block';
@@ -447,167 +505,45 @@
             });
         }
 
-        // Search places with debouncing - FIXED VERSION
-        function searchPlaces(query, serviceInstance, dropdown, inputElement, fieldId) {
+        // Search cities using Google Places API
+        function searchCities(query, dropdown, cityInput, stateInput) {
             const request = {
                 input: query,
-                types: ['geocode'],
-                componentRestrictions: { country: 'IN' }, // Restrict to India only
-                sessionToken: new google.maps.places.AutocompleteSessionToken(),
-                // REMOVED: region: 'IN' - this was causing location bias
-                // REMOVED: location and radius parameters that might bias results
-                strictBounds: false
+                types: ['(cities)'],
+                componentRestrictions: { country: 'IN' }
             };
 
-            console.log(`Searching for "${query}" in ${fieldId} field (after 1s delay)`);
-
-            serviceInstance.getPlacePredictions(request, (predictions, status) => {
+            placesService.getPlacePredictions(request, (predictions, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
-                    // Take only first 5 results after API call to save processing
-                    displayPredictions(predictions.slice(0, 5), dropdown, inputElement, fieldId);
+                    displayCityPredictions(predictions.slice(0, 5), dropdown, cityInput, stateInput);
                 } else {
-                    console.log(`${fieldId} search status:`, status);
                     dropdown.style.display = 'none';
                 }
             });
         }
 
-        // Extract structured address components from Google Places API
-        function extractAddressComponents(place) {
-            const addressData = {
-                zip: '',
-                landmark: '',
-                city: '',
-                state: '',
-                country: 'India' // Default since we're restricting to India
-            };
-
-            if (!place.address_components) {
-                return addressData;
-            }
-
-            // Map Google Places API component types to our structure
-            place.address_components.forEach(component => {
-                const types = component.types;
-
-                // Postal Code
-                if (types.includes('postal_code')) {
-                    addressData.zip = component.long_name;
-                }
-
-                // City - can be locality, sublocality, or administrative_area_level_2
-                else if (types.includes('locality')) {
-                    addressData.city = component.long_name;
-                }
-                else if (types.includes('sublocality_level_1') && !addressData.city) {
-                    addressData.city = component.long_name;
-                }
-                else if (types.includes('administrative_area_level_2') && !addressData.city) {
-                    addressData.city = component.long_name;
-                }
-
-                // State
-                else if (types.includes('administrative_area_level_1')) {
-                    addressData.state = component.long_name;
-                }
-
-                // Country
-                else if (types.includes('country')) {
-                    addressData.country = component.long_name;
-                }
-
-                // Landmark - can be sublocality, neighborhood, or premise
-                else if (types.includes('sublocality_level_2') ||
-                    types.includes('sublocality_level_3') ||
-                    types.includes('neighborhood')) {
-                    if (!addressData.landmark) {
-                        addressData.landmark = component.long_name;
-                    }
-                }
-                else if (types.includes('premise') || types.includes('establishment')) {
-                    if (!addressData.landmark && place.name !== component.long_name) {
-                        addressData.landmark = component.long_name;
-                    }
-                }
-            });
-
-            // If no landmark found, try to use the place name as landmark
-            if (!addressData.landmark && place.name) {
-                // Only use place name if it's not the same as the city
-                if (place.name !== addressData.city) {
-                    addressData.landmark = place.name;
-                }
-            }
-
-            // Fallback: if still no landmark, try to extract from formatted address
-            if (!addressData.landmark && place.formatted_address) {
-                const addressParts = place.formatted_address.split(',');
-                if (addressParts.length > 2) {
-                    // Try to get a meaningful landmark from the first part
-                    const firstPart = addressParts[0].trim();
-                    if (firstPart !== addressData.city && firstPart !== addressData.state) {
-                        addressData.landmark = firstPart;
-                    }
-                }
-            }
-
-            return addressData;
-        }
-
-        // Get detailed place information with structured address components
-        function getPlaceDetails(placeId, fieldId, callback) {
-            const request = {
-                placeId: placeId,
-                fields: ['address_components', 'name', 'formatted_address']
-            };
-
-            window.placesDetailService.getDetails(request, (place, status) => {
-                if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    // Extract structured address components
-                    const structuredAddress = extractAddressComponents(place);
-
-                    // Store the structured data based on field
-                    if (fieldId === 'pickup') {
-                        pickupAddressData = structuredAddress;
-                    } else if (fieldId === 'delivery') {
-                        deliveryAddressData = structuredAddress;
-                    }
-
-                    callback({
-                        structuredData: structuredAddress
-                    });
+        // Search pincodes using Geocoding API
+        function searchPincodes(query, dropdown, pincodeInput, cityInput, stateInput) {
+            geocoder.geocode({
+                address: query,
+                componentRestrictions: { country: 'IN', postalCode: query }
+            }, (results, status) => {
+                if (status === 'OK' && results.length > 0) {
+                    displayPincodePredictions(results.slice(0, 5), dropdown, pincodeInput, cityInput, stateInput);
                 } else {
-                    console.error('Places Details request failed:', status);
-                    callback(null);
+                    dropdown.style.display = 'none';
                 }
             });
         }
 
-        // Convert structured address data to readable string format
-        function formatAddressString(addressData) {
-            if (!addressData) return '';
-
-            const parts = [];
-
-            if (addressData.landmark) parts.push(addressData.landmark);
-            if (addressData.city) parts.push(addressData.city);
-            if (addressData.state) parts.push(addressData.state);
-            if (addressData.zip) parts.push(addressData.zip);
-            if (addressData.country) parts.push(addressData.country);
-
-            return parts.filter(part => part.trim() !== '').join(', ');
-        }
-
-        // Display predictions in custom dropdown
-        function displayPredictions(predictions, dropdown, inputElement, fieldId) {
+        // Display city predictions
+        function displayCityPredictions(predictions, dropdown, cityInput, stateInput) {
             dropdown.innerHTML = '';
 
-            // predictions already limited to 5 from the API response
             predictions.forEach(prediction => {
                 const item = document.createElement('div');
                 item.className = 'autocomplete-item';
 
-                // Show the prediction description directly
                 const mainText = prediction.structured_formatting.main_text;
                 const secondaryText = prediction.structured_formatting.secondary_text;
 
@@ -616,21 +552,18 @@
                     <div style="color: #666; font-size: 12px;">${secondaryText || ''}</div>
                 `;
 
-                // Handle selection
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
-
-                    // Show user the description immediately
-                    inputElement.value = prediction.description;
+                    cityInput.value = mainText;
                     dropdown.style.display = 'none';
 
-                    // Get structured data in background
-                    getPlaceDetails(prediction.place_id, fieldId, (placeDetails) => {
-                        if (placeDetails) {
-                            console.log(`${fieldId} structured data:`, placeDetails.structuredData);
+                    // Extract and set state
+                    if (secondaryText) {
+                        const stateName = extractStateName(secondaryText);
+                        if (stateName) {
+                            stateInput.value = stateName;
                         }
-                    });
+                    }
                 });
 
                 dropdown.appendChild(item);
@@ -639,8 +572,55 @@
             dropdown.style.display = 'block';
         }
 
+        // Display pincode predictions
+        function displayPincodePredictions(results, dropdown, pincodeInput, cityInput, stateInput) {
+            dropdown.innerHTML = '';
+
+            results.forEach(result => {
+                const addressComponents = result.address_components;
+                const pincode = extractComponent(addressComponents, 'postal_code');
+                const city = extractComponent(addressComponents, 'locality') || 
+                           extractComponent(addressComponents, 'administrative_area_level_2');
+                const state = extractComponent(addressComponents, 'administrative_area_level_1');
+
+                if (pincode) {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+
+                    item.innerHTML = `
+                        <div style="font-weight: bold; color: #333;">${pincode}</div>
+                        <div style="color: #666; font-size: 12px;">${city}, ${state}</div>
+                    `;
+
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        pincodeInput.value = pincode;
+                        if (city) cityInput.value = city;
+                        if (state) stateInput.value = state;
+                        dropdown.style.display = 'none';
+                    });
+
+                    dropdown.appendChild(item);
+                }
+            });
+
+            dropdown.style.display = 'block';
+        }
+
+        // Extract address component by type
+        function extractComponent(components, type) {
+            const component = components.find(comp => comp.types.includes(type));
+            return component ? component.long_name : null;
+        }
+
+        // Extract state name from secondary text
+        function extractStateName(secondaryText) {
+            const parts = secondaryText.split(',');
+            return parts.length > 0 ? parts[parts.length - 1].trim() : null;
+        }
+
         // Check serviceability using the API
-        async function checkServiceability(pickupZip, deliveryZip) {
+        async function checkServiceability(pickupPincode, deliveryPincode) {
             try {
                 const response = await fetch('https://sandbox-apis.prayog.io/serviceability/v1/check', {
                     method: 'POST',
@@ -648,8 +628,8 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        source_postal_code: pickupZip,
-                        destination_postal_code: deliveryZip
+                        source_postal_code: pickupPincode,
+                        destination_postal_code: deliveryPincode
                     })
                 });
 
@@ -664,11 +644,9 @@
             }
         }
 
-        // Show message functions
-        function showMessage(elementId, message, type = 'info') {
-            // Hide all messages first
+        // Show/hide messages
+        function showMessage(elementId, message) {
             hideAllMessages();
-
             const element = document.getElementById(elementId);
             element.innerHTML = message;
             element.style.display = 'block';
@@ -693,58 +671,57 @@
         const form = document.getElementById('addressForm');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Function to format structured address for WhatsApp
-        function formatStructuredAddress(addressData, addressType) {
-            if (!addressData) return `${addressType}: Not available`;
-
-            let formattedAddress = `${addressType}:\n`;
-            formattedAddress += `    zip: ${addressData.zip || 'N/A'}\n`;
-            formattedAddress += `    landmark: "${addressData.landmark || 'N/A'}"\n`;
-            formattedAddress += `    city: "${addressData.city || 'N/A'}"\n`;
-            formattedAddress += `    state: "${addressData.state || 'N/A'}"\n`;
-            formattedAddress += `    country: "${addressData.country || 'N/A'}"`;
-
-            return formattedAddress;
-        }
-
         form.addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            const pickup = document.getElementById('pickup').value.trim();
-            const delivery = document.getElementById('delivery').value.trim();
+            // Get all form values
+            const pickupData = {
+                line1: document.getElementById('pickupLine1').value.trim(),
+                line2: document.getElementById('pickupLine2').value.trim(),
+                landmark: document.getElementById('pickupLandmark').value.trim(),
+                city: document.getElementById('pickupCity').value.trim(),
+                pincode: document.getElementById('pickupPincode').value.trim(),
+                state: document.getElementById('pickupState').value.trim()
+            };
 
-            if (!pickup || !delivery) {
-                showMessage('errorMessage', 'Please enter both pickup and delivery addresses.');
+            const deliveryData = {
+                line1: document.getElementById('deliveryLine1').value.trim(),
+                line2: document.getElementById('deliveryLine2').value.trim(),
+                landmark: document.getElementById('deliveryLandmark').value.trim(),
+                city: document.getElementById('deliveryCity').value.trim(),
+                pincode: document.getElementById('deliveryPincode').value.trim(),
+                state: document.getElementById('deliveryState').value.trim()
+            };
+
+            // Validate required fields
+            const requiredFields = [
+                { value: pickupData.line1, name: 'Pickup Address Line 1' },
+                { value: pickupData.line2, name: 'Pickup Address Line 2' },
+                { value: pickupData.city, name: 'Pickup City' },
+                { value: pickupData.pincode, name: 'Pickup Pincode' },
+                { value: pickupData.state, name: 'Pickup State' },
+                { value: deliveryData.line1, name: 'Delivery Address Line 1' },
+                { value: deliveryData.line2, name: 'Delivery Address Line 2' },
+                { value: deliveryData.city, name: 'Delivery City' },
+                { value: deliveryData.pincode, name: 'Delivery Pincode' },
+                { value: deliveryData.state, name: 'Delivery State' }
+            ];
+
+            const emptyFields = requiredFields.filter(field => !field.value);
+            if (emptyFields.length > 0) {
+                showMessage('errorMessage', `Please fill in: ${emptyFields.map(f => f.name).join(', ')}`);
                 return;
             }
 
-            // Check if ZIP codes are available
-            let pickupZip = pickupAddressData?.zip;
-            let deliveryZip = deliveryAddressData?.zip;
-
-            // If ZIP codes are missing, ask user to provide them
-            if (!pickupZip) {
-                const userPickupZip = prompt('Please provide the ZIP code for pickup location:');
-                if (!userPickupZip || !userPickupZip.trim()) {
-                    showMessage('errorMessage', 'Pickup ZIP code is required to check serviceability.');
-                    return;
-                }
-                pickupZip = userPickupZip.trim();
-                // Update the stored data
-                if (!pickupAddressData) pickupAddressData = {};
-                pickupAddressData.zip = pickupZip;
+            // Validate pincode format
+            const pincodePattern = /^[0-9]{6}$/;
+            if (!pincodePattern.test(pickupData.pincode)) {
+                showMessage('errorMessage', 'Pickup pincode must be 6 digits');
+                return;
             }
-
-            if (!deliveryZip) {
-                const userDeliveryZip = prompt('Please provide the ZIP code for delivery location:');
-                if (!userDeliveryZip || !userDeliveryZip.trim()) {
-                    showMessage('errorMessage', 'Delivery ZIP code is required to check serviceability.');
-                    return;
-                }
-                deliveryZip = userDeliveryZip.trim();
-                // Update the stored data
-                if (!deliveryAddressData) deliveryAddressData = {};
-                deliveryAddressData.zip = deliveryZip;
+            if (!pincodePattern.test(deliveryData.pincode)) {
+                showMessage('errorMessage', 'Delivery pincode must be 6 digits');
+                return;
             }
 
             // Disable submit button and show checking message
@@ -753,7 +730,7 @@
 
             try {
                 // Check serviceability
-                const serviceabilityResult = await checkServiceability(pickupZip, deliveryZip);
+                const serviceabilityResult = await checkServiceability(pickupData.pincode, deliveryData.pincode);
 
                 console.log('Serviceability Result:', serviceabilityResult);
 
@@ -764,13 +741,11 @@
                     setTimeout(() => {
                         const phoneNumber = '916358250345';
 
-                        // Create structured message format
-                        const pickupMessage = formatStructuredAddress(pickupAddressData, 'pickup');
-                        const deliveryMessage = formatStructuredAddress(deliveryAddressData, 'delivery');
+                        // Format addresses for WhatsApp
+                        const pickupAddress = formatAddressForWhatsApp(pickupData, 'Pickup Address');
+                        const deliveryAddress = formatAddressForWhatsApp(deliveryData, 'Delivery Address');
 
-                        // Combine both addresses with proper WhatsApp formatting (%0A for line breaks)
-                        const message = encodeURIComponent(`${pickupMessage}\n\n${deliveryMessage}`);
-
+                        const message = encodeURIComponent(`${pickupAddress}\n\n${deliveryAddress}`);
                         const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
                         window.location.href = whatsappURL;
                     }, 1500);
@@ -778,7 +753,7 @@
                 } else if (serviceabilityResult.success && !serviceabilityResult.is_serviceable) {
                     // Service not available
                     const errorDetails = serviceabilityResult.data;
-                    let errorMessage = 'Sorry, we do not provide service to this location.';
+                    let errorMessage = 'Sorry, we do not provide service between these locations.';
 
                     if (errorDetails && errorDetails.message) {
                         errorMessage = errorDetails.message;
@@ -801,6 +776,18 @@
             submitBtn.disabled = false;
         });
 
+        // Format address data for WhatsApp message
+        function formatAddressForWhatsApp(addressData, title) {
+            let formatted = `${title}:\n`;
+            formatted += `${addressData.line1}\n`;
+            formatted += `${addressData.line2}\n`;
+            if (addressData.landmark) {
+                formatted += `Near: ${addressData.landmark}\n`;
+            }
+            formatted += `${addressData.city}, ${addressData.state} - ${addressData.pincode}`;
+            return formatted;
+        }
+
         // Prevent zoom on iOS when focusing inputs
         const inputs = document.querySelectorAll('input[type="text"]');
         inputs.forEach(input => {
@@ -817,7 +804,6 @@
     </script>
 
     <!-- Load Google Maps Places API -->
-    <!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUDgijpqock4xtLQrgOHIkPAdQF8FqaF8&libraries=places&callback=initAutocomplete&loading=async"
         onerror="handleGoogleMapsError()"></script>
