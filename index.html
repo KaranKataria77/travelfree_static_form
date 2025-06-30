@@ -777,14 +777,20 @@
         // Format address data for WhatsApp message
         function formatAddressForWhatsApp(addressData, title) {
             let formatted = `${title}:\n`;
-            formatted += `${addressData.line1}\n`;
+            formatted += `zip: ${addressData.pincode}\n`;
+            
+            // Combine street address (line1 + line2 + landmark)
+            let street = addressData.line1;
             if (addressData.line2) {
-                formatted += `${addressData.line2}\n`;
+                street += `, ${addressData.line2}`;
             }
             if (addressData.landmark) {
-                formatted += `Near: ${addressData.landmark}\n`;
+                street += `, ${addressData.landmark}`;
             }
-            formatted += `${addressData.city}, ${addressData.state} - ${addressData.pincode}`;
+            formatted += `street: ${street}\n`;
+            
+            formatted += `city: ${addressData.city}\n`;
+            formatted += `state: ${addressData.state}`;
             return formatted;
         }
 
