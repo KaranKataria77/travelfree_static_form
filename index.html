@@ -282,6 +282,17 @@
                 
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="pickupName">Name <span class="required">*</span></label>
+                        <input type="text" id="pickupName" name="pickupName" required placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="pickupMobile">Mobile Number <span class="required">*</span></label>
+                        <input type="tel" id="pickupMobile" name="pickupMobile" required placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="pickupLine1">Address Line 1 <span class="required">*</span></label>
                         <input type="text" id="pickupLine1" name="pickupLine1" required placeholder="House/Flat No, Building">
                     </div>
@@ -328,6 +339,17 @@
             <div class="address-section">
                 <h3>Delivery Address</h3>
                 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryName">Name <span class="required">*</span></label>
+                        <input type="text" id="deliveryName" name="deliveryName" required placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryMobile">Mobile Number <span class="required">*</span></label>
+                        <input type="tel" id="deliveryMobile" name="deliveryMobile" required placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10">
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="deliveryLine1">Address Line 1 <span class="required">*</span></label>
@@ -676,6 +698,8 @@
 
             // Get all form values
             const pickupData = {
+                name: document.getElementById('pickupName').value.trim(),
+                mobile: document.getElementById('pickupMobile').value.trim(),
                 line1: document.getElementById('pickupLine1').value.trim(),
                 line2: document.getElementById('pickupLine2').value.trim(),
                 landmark: document.getElementById('pickupLandmark').value.trim(),
@@ -685,6 +709,8 @@
             };
 
             const deliveryData = {
+                name: document.getElementById('deliveryName').value.trim(),
+                mobile: document.getElementById('deliveryMobile').value.trim(),
                 line1: document.getElementById('deliveryLine1').value.trim(),
                 line2: document.getElementById('deliveryLine2').value.trim(),
                 landmark: document.getElementById('deliveryLandmark').value.trim(),
@@ -695,10 +721,14 @@
 
             // Validate required fields
             const requiredFields = [
+                { value: pickupData.name, name: 'Pickup Name' },
+                { value: pickupData.mobile, name: 'Pickup Mobile Number' },
                 { value: pickupData.line1, name: 'Pickup Address Line 1' },
                 { value: pickupData.city, name: 'Pickup City' },
                 { value: pickupData.pincode, name: 'Pickup Pincode' },
                 { value: pickupData.state, name: 'Pickup State' },
+                { value: deliveryData.name, name: 'Delivery Name' },
+                { value: deliveryData.mobile, name: 'Delivery Mobile Number' },
                 { value: deliveryData.line1, name: 'Delivery Address Line 1' },
                 { value: deliveryData.city, name: 'Delivery City' },
                 { value: deliveryData.pincode, name: 'Delivery Pincode' },
@@ -708,6 +738,17 @@
             const emptyFields = requiredFields.filter(field => !field.value);
             if (emptyFields.length > 0) {
                 showMessage('errorMessage', `Please fill in: ${emptyFields.map(f => f.name).join(', ')}`);
+                return;
+            }
+
+            // Validate mobile number format
+            const mobilePattern = /^[0-9]{10}$/;
+            if (!mobilePattern.test(pickupData.mobile)) {
+                showMessage('errorMessage', 'Pickup mobile number must be 10 digits');
+                return;
+            }
+            if (!mobilePattern.test(deliveryData.mobile)) {
+                showMessage('errorMessage', 'Delivery mobile number must be 10 digits');
                 return;
             }
 
@@ -777,6 +818,8 @@
         // Format address data for WhatsApp message
         function formatAddressForWhatsApp(addressData, title) {
             let formatted = `${title}:\n`;
+            formatted += `name: ${addressData.name}\n`;
+            formatted += `mobile: ${addressData.mobile}\n`;
             formatted += `zip: ${addressData.pincode}\n`;
             
             // Combine street address (line1 + line2 + landmark)
