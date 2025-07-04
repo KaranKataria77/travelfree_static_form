@@ -108,6 +108,88 @@
             border-color: #dc3545;
         }
 
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background-color: white;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        select:invalid {
+            border-color: #dc3545;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        input[type="number"]:invalid {
+            border-color: #dc3545;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            color: #333;
+            flex: 1;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + label {
+            font-weight: bold;
+            color: #007bff;
+        }
+
         .input-container {
             position: relative;
         }
@@ -287,7 +369,7 @@
                     </div>
                     <div class="form-group">
                         <label for="pickupMobile">Mobile Number <span class="required">*</span></label>
-                        <input type="tel" id="pickupMobile" name="pickupMobile" required placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10">
+                        <input type="text" id="pickupMobile" name="pickupMobile" required placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10">
                     </div>
                 </div>
 
@@ -314,15 +396,15 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="pickupCity">City <span class="required">*</span></label>
-                        <div class="input-container">
-                            <input type="text" id="pickupCity" name="pickupCity" required placeholder="Enter city">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="pickupPincode">Pincode <span class="required">*</span></label>
                         <div class="input-container">
                             <input type="text" id="pickupPincode" name="pickupPincode" required placeholder="Enter pincode" pattern="[0-9]{6}" maxlength="6">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pickupCity">City <span class="required">*</span></label>
+                        <div class="input-container">
+                            <input type="text" id="pickupCity" name="pickupCity" required placeholder="Enter city">
                         </div>
                     </div>
                 </div>
@@ -346,7 +428,7 @@
                     </div>
                     <div class="form-group">
                         <label for="deliveryMobile">Mobile Number <span class="required">*</span></label>
-                        <input type="tel" id="deliveryMobile" name="deliveryMobile" required placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10">
+                        <input type="text" id="deliveryMobile" name="deliveryMobile" required placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10">
                     </div>
                 </div>
 
@@ -373,15 +455,15 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="deliveryCity">City <span class="required">*</span></label>
-                        <div class="input-container">
-                            <input type="text" id="deliveryCity" name="deliveryCity" required placeholder="Enter city">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="deliveryPincode">Pincode <span class="required">*</span></label>
                         <div class="input-container">
                             <input type="text" id="deliveryPincode" name="deliveryPincode" required placeholder="Enter pincode" pattern="[0-9]{6}" maxlength="6">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryCity">City <span class="required">*</span></label>
+                        <div class="input-container">
+                            <input type="text" id="deliveryCity" name="deliveryCity" required placeholder="Enter city">
                         </div>
                     </div>
                 </div>
@@ -410,6 +492,83 @@
         </div>
 
         <div class="error-message" id="errorMessage">
+        </div>
+    </div>
+
+    <!-- Luggage Details Component -->
+    <div class="container" id="luggageContainer" style="display: none;">
+        <h2>Luggage Details</h2>
+        <form id="luggageForm">
+            <div class="address-section">
+                <h3>Package Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="luggageWeightSmall">Small (kg) <span class="optional">(Optional)</span></label>
+                        <input type="number" id="luggageWeightSmall" name="luggageWeightSmall" placeholder="Enter weight" min="0.1" max="100" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="luggageWeightMedium">Medium (kg) <span class="optional">(Optional)</span></label>
+                        <input type="number" id="luggageWeightMedium" name="luggageWeightMedium" placeholder="Enter weight" min="0.1" max="100" step="0.1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="luggageWeightLarge">Large (kg) <span class="optional">(Optional)</span></label>
+                        <input type="number" id="luggageWeightLarge" name="luggageWeightLarge" placeholder="Enter weight" min="0.1" max="100" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="luggageWeightXLarge">X-Large (kg) <span class="optional">(Optional)</span></label>
+                        <input type="number" id="luggageWeightXLarge" name="luggageWeightXLarge" placeholder="Enter weight" min="0.1" max="100" step="0.1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Luggage Content <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="contentClothes" name="contentClothes" value="Clothes">
+                                <label for="contentClothes">Clothes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="contentDocuments" name="contentDocuments" value="Documents">
+                                <label for="contentDocuments">Documents</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="contentBooks" name="contentBooks" value="Books">
+                                <label for="contentBooks">Books</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="contentElectronics" name="contentElectronics" value="Electronics">
+                                <label for="contentElectronics">Electronics</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="contentOther" name="contentOther" value="Other">
+                                <label for="contentOther">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row" id="otherContentRow" style="display: none;">
+                    <div class="form-group">
+                        <label for="otherContent">Specify Content <span class="required">*</span></label>
+                        <input type="text" id="otherContent" name="otherContent" placeholder="Please specify luggage content">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="luggageSubmitBtn">Submit & Send to WhatsApp</button>
+            <button type="button" id="backToAddressBtn" style="background-color: #6c757d; margin-top: 10px;">Back to Address</button>
+        </form>
+
+        <div class="success-message" id="luggageSuccessMessage">
+            Redirecting to WhatsApp...
+        </div>
+
+        <div class="error-message" id="luggageErrorMessage">
         </div>
     </div>
 
@@ -666,6 +825,10 @@
             }
         }
 
+        // Global variables to store form data
+        let pickupData = {};
+        let deliveryData = {};
+
         // Show/hide messages
         function showMessage(elementId, message) {
             hideAllMessages();
@@ -679,6 +842,8 @@
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('checkingMessage').style.display = 'none';
             document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('luggageSuccessMessage').style.display = 'none';
+            document.getElementById('luggageErrorMessage').style.display = 'none';
         }
 
         // Handle Google Maps API load error
@@ -697,7 +862,7 @@
             event.preventDefault();
 
             // Get all form values
-            const pickupData = {
+            pickupData = {
                 name: document.getElementById('pickupName').value.trim(),
                 mobile: document.getElementById('pickupMobile').value.trim(),
                 line1: document.getElementById('pickupLine1').value.trim(),
@@ -708,7 +873,7 @@
                 state: document.getElementById('pickupState').value.trim()
             };
 
-            const deliveryData = {
+            deliveryData = {
                 name: document.getElementById('deliveryName').value.trim(),
                 mobile: document.getElementById('deliveryMobile').value.trim(),
                 line1: document.getElementById('deliveryLine1').value.trim(),
@@ -774,20 +939,10 @@
                 console.log('Serviceability Result:', serviceabilityResult);
 
                 if (serviceabilityResult.success && serviceabilityResult.is_serviceable) {
-                    // Service is available
-                    showMessage('successMessage', 'Service is available! Redirecting to WhatsApp...');
-
-                    setTimeout(() => {
-                        const phoneNumber = '916358250345';
-
-                        // Format addresses for WhatsApp
-                        const pickupAddress = formatAddressForWhatsApp(pickupData, 'Pickup Address');
-                        const deliveryAddress = formatAddressForWhatsApp(deliveryData, 'Delivery Address');
-
-                        const message = encodeURIComponent(`${pickupAddress}\n\n${deliveryAddress}`);
-                        const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-                        window.location.href = whatsappURL;
-                    }, 1500);
+                    // Service is available - show luggage form
+                    document.getElementById('addressForm').parentElement.style.display = 'none';
+                    document.getElementById('luggageContainer').style.display = 'block';
+                    hideAllMessages();
 
                 } else if (serviceabilityResult.success && !serviceabilityResult.is_serviceable) {
                     // Service not available
@@ -834,6 +989,124 @@
             
             formatted += `city: ${addressData.city}\n`;
             formatted += `state: ${addressData.state}`;
+            return formatted;
+        }
+
+        // Handle luggage content checkbox selection
+        document.getElementById('contentOther').addEventListener('change', function() {
+            const otherContentRow = document.getElementById('otherContentRow');
+            const otherContentInput = document.getElementById('otherContent');
+            
+            if (this.checked) {
+                otherContentRow.style.display = 'flex';
+                otherContentInput.required = true;
+            } else {
+                otherContentRow.style.display = 'none';
+                otherContentInput.required = false;
+                otherContentInput.value = '';
+            }
+        });
+
+        // Handle back button
+        document.getElementById('backToAddressBtn').addEventListener('click', function() {
+            document.getElementById('luggageContainer').style.display = 'none';
+            document.getElementById('addressForm').parentElement.style.display = 'block';
+            hideAllMessages();
+        });
+
+        // Handle luggage form submission
+        document.getElementById('luggageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const luggageWeightSmall = parseFloat(document.getElementById('luggageWeightSmall').value) || 0;
+            const luggageWeightMedium = parseFloat(document.getElementById('luggageWeightMedium').value) || 0;
+            const luggageWeightLarge = parseFloat(document.getElementById('luggageWeightLarge').value) || 0;
+            const luggageWeightXLarge = parseFloat(document.getElementById('luggageWeightXLarge').value) || 0;
+            
+            // Get selected content types
+            const contentClothes = document.getElementById('contentClothes').checked;
+            const contentDocuments = document.getElementById('contentDocuments').checked;
+            const contentBooks = document.getElementById('contentBooks').checked;
+            const contentElectronics = document.getElementById('contentElectronics').checked;
+            const contentOther = document.getElementById('contentOther').checked;
+            const otherContent = document.getElementById('otherContent').value;
+
+            // Validate that at least one weight field has a value > 0
+            if (luggageWeightSmall <= 0 && luggageWeightMedium <= 0 && luggageWeightLarge <= 0 && luggageWeightXLarge <= 0) {
+                showMessage('luggageErrorMessage', 'Please enter weight in at least one category');
+                return;
+            }
+
+            // Validate that at least one content type is selected
+            if (!contentClothes && !contentDocuments && !contentBooks && !contentElectronics && !contentOther) {
+                showMessage('luggageErrorMessage', 'Please select at least one luggage content type');
+                return;
+            }
+
+            if (contentOther && !otherContent.trim()) {
+                showMessage('luggageErrorMessage', 'Please specify luggage content');
+                return;
+            }
+
+            // Show success message
+            showMessage('luggageSuccessMessage', 'Redirecting to WhatsApp...');
+
+            setTimeout(() => {
+                const phoneNumber = '916358250345';
+
+                // Format addresses for WhatsApp
+                const pickupAddress = formatAddressForWhatsApp(pickupData, 'Pickup Address');
+                const deliveryAddress = formatAddressForWhatsApp(deliveryData, 'Delivery Address');
+                
+                // Format luggage details
+                const luggageWeights = {
+                    small: luggageWeightSmall,
+                    medium: luggageWeightMedium,
+                    large: luggageWeightLarge,
+                    xlarge: luggageWeightXLarge
+                };
+                const luggageContentTypes = {
+                    clothes: contentClothes,
+                    documents: contentDocuments,
+                    books: contentBooks,
+                    electronics: contentElectronics,
+                    other: contentOther
+                };
+                const luggageDetails = formatLuggageForWhatsApp(luggageWeights, luggageContentTypes, otherContent);
+
+                const message = encodeURIComponent(`${pickupAddress}\n\n${deliveryAddress}\n\n${luggageDetails}`);
+                const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+                window.location.href = whatsappURL;
+            }, 1500);
+        });
+
+        // Format luggage data for WhatsApp message
+        function formatLuggageForWhatsApp(weights, contentTypes, otherContent) {
+            let formatted = `Luggage Details:\n`;
+            
+            // Add only weight categories that have values > 0
+            if (weights.small > 0) {
+                formatted += `small_kg: ${weights.small}\n`;
+            }
+            if (weights.medium > 0) {
+                formatted += `medium_kg: ${weights.medium}\n`;
+            }
+            if (weights.large > 0) {
+                formatted += `large_kg: ${weights.large}\n`;
+            }
+            if (weights.xlarge > 0) {
+                formatted += `xlarge_kg: ${weights.xlarge}\n`;
+            }
+            
+            // Add selected content types
+            const selectedContents = [];
+            if (contentTypes.clothes) selectedContents.push('Clothes');
+            if (contentTypes.documents) selectedContents.push('Documents');
+            if (contentTypes.books) selectedContents.push('Books');
+            if (contentTypes.electronics) selectedContents.push('Electronics');
+            if (contentTypes.other) selectedContents.push(otherContent);
+            
+            formatted += `content: ${selectedContents.join(', ')}`;
             return formatted;
         }
 
