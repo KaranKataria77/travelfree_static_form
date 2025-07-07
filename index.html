@@ -1082,7 +1082,7 @@
 
         // Format luggage data for WhatsApp message
         function formatLuggageForWhatsApp(weights, contentTypes, otherContent) {
-            let formatted = `Luggage Details:\n`;
+            let formatted = `luggage_detail: {\n`;
             
             // Add only weight categories that have values > 0
             if (weights.small > 0) {
@@ -1106,7 +1106,8 @@
             if (contentTypes.electronics) selectedContents.push('Electronics');
             if (contentTypes.other) selectedContents.push(otherContent);
             
-            formatted += `content: ${selectedContents.join(', ')}`;
+            formatted += `content: ${selectedContents.join(', ')}\n`;
+            formatted += `}`;
             return formatted;
         }
 
